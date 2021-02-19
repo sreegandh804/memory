@@ -1,0 +1,16 @@
+Lstm
+====
+
+.. automodule:: ivy_memory.learnt.lstm
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Lstm
+
+   lstm/lstm.rst
+

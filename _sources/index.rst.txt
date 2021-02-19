@@ -105,6 +105,13 @@ Documentation Tree
 
 .. toctree::
    :maxdepth: -1
+   :caption: Learnt
+
+   learnt/lstm.rst
+
+
+.. toctree::
+   :maxdepth: -1
    :caption: Docs
 
    docs/ivy.rst
