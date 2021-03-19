@@ -12,5 +12,8 @@ Lstm
    :maxdepth: -1
    :caption: Lstm
 
-   lstm/lstm.rst
+   lstm/lstm_update.rst
+   lstm/LSTM:
+
+    def __init__.rst
 

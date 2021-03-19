@@ -1,0 +1,20 @@
+Ntm
+===
+
+.. automodule:: ivy_memory.learnt.ntm
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Ntm
+
+   ntm/NTMCell:
+    def __init__.rst
+   ntm/NTM:
+
+    def __init__.rst
+

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Overview &mdash; Ivy Memory 1.0 documentation</title>
+  <title>Contents &mdash; Ivy Memory 1.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
   <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Lstm" href="learnt/lstm.html" /> 
+    <link rel="next" title="Linear" href="learnt/linear.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -81,7 +81,9 @@
             
               <p class="caption"><span class="caption-text">Learnt</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="learnt/linear.html">Linear</a></li>
 <li class="toctree-l1"><a class="reference internal" href="learnt/lstm.html">Lstm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="learnt/ntm.html">Ntm</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Docs</span></p>
 <ul>
@@ -136,7 +138,7 @@
     
       <li><a href="#">Docs</a> &raquo;</li>
         
-      <li>Overview</li>
+      <li>Contents</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -188,9 +190,18 @@
     <a href="https://numpy.org">
         <img width="12%" style="float: left;" src="https://raw.githubusercontent.com/ivy-dl/ivy-dl.github.io/master/img/externally_linked/logos/supported/numpy_logo.png">
     </a>
-</div><div class="section" id="overview">
+</div><div class="section" id="contents">
+<h1>Contents<a class="headerlink" href="#contents" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="#overview">Overview</a></p></li>
+<li><p><a class="reference internal" href="#run-through">Run Through</a></p></li>
+<li><p><a class="reference internal" href="#interactive-demos">Interactive Demos</a></p></li>
+<li><p><a class="reference internal" href="#get-involed">Get Involed</a></p></li>
+</ul>
+</div>
+<div class="section" id="overview">
 <h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h1>
-<p><strong>What is Ivy Memory? [coming soon!]</strong></p>
+<p><strong>What is Ivy Memory?</strong></p>
 <p>Ivy memory provides a range of differentiable memory modules,
 including learnt modules such as Long Short Term Memory (LSTM) and Neural Turing Machines (NTM),
 but also parameter-free modules, such as End-to-End Egospheric Spatial Memory (ESM).</p>
@@ -225,14 +236,244 @@ Click on the icons below for their respective github pages.</p>
 </div>
 <br clear="all" />
 <br/>
-<br/></div>
+<br/><p><strong>Quick Start</strong></p>
+<p>Ivy memory can be installed like so: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">ivy-memory</span></code></p>
+<p>To quickly see the different aspects of the library, we suggest you check out the <a class="reference external" href="https://github.com/ivy-dl/memory/tree/master/demos">demos</a>!
+We suggest you start by running the script <code class="docutils literal notranslate"><span class="pre">run_through.py</span></code>,
+and read the “Run Through” section below which explains this script.</p>
+<p>For more interactive demos, we suggest you run either
+<code class="docutils literal notranslate"><span class="pre">learning_to_copy_with_ntm.py</span></code> or <code class="docutils literal notranslate"><span class="pre">mapping_a_room_with_esm.py</span></code> in the <a class="reference external" href="https://github.com/ivy-dl/memory/tree/master/demos/interactive">interactive</a> demos folder.</p>
+</div>
+<div class="section" id="run-through">
+<h1>Run Through<a class="headerlink" href="#run-through" title="Permalink to this headline">¶</a></h1>
+<p>We run through some of the different parts of the library via a simple ongoing example script.
+The full script is available in the <a class="reference external" href="https://github.com/ivy-dl/memory/tree/master/demos">demos</a> folder, as file <code class="docutils literal notranslate"><span class="pre">run_through.py</span></code>.
+First, we select a random backend framework to use for the examples, from the options
+<code class="docutils literal notranslate"><span class="pre">ivy.jax</span></code>, <code class="docutils literal notranslate"><span class="pre">ivy.tensorflow</span></code>, <code class="docutils literal notranslate"><span class="pre">ivy.torch</span></code>, <code class="docutils literal notranslate"><span class="pre">ivy.mxnd</span></code> or <code class="docutils literal notranslate"><span class="pre">ivy.numpy</span></code>,
+and use this to set the ivy backend framework.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ivy</span>
+<span class="kn">import</span> <span class="nn">ivy_memory</span> <span class="kn">as</span> <span class="nn">ivy_mem</span>
+<span class="kn">from</span> <span class="nn">ivy_demo_utils.framework_utils</span> <span class="kn">import</span> <span class="n">choose_random_framework</span>
+<span class="n">ivy</span><span class="o">.</span><span class="n">set_framework</span><span class="p">(</span><span class="n">choose_random_framework</span><span class="p">())</span>
+</pre></div>
+</div>
+<p><strong>End-to-End Egospheric Spatial Memory</strong></p>
+<p>First, we show how the Ivy End-to-End Egospheric Spatial Memory (ESM) class can be used inside a pure-Ivy model.
+We first define the model as below.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">IvyModel</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channels_in</span><span class="p">,</span> <span class="n">channels_out</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_channels_in</span> <span class="o">=</span> <span class="n">channels_in</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_esm</span> <span class="o">=</span> <span class="n">ivy_mem</span><span class="o">.</span><span class="n">ESM</span><span class="p">(</span><span class="n">omni_image_dims</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">32</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_linear</span> <span class="o">=</span> <span class="n">ivy_mem</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">channels_in</span><span class="p">,</span> <span class="n">channels_out</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linear</span><span class="o">.</span><span class="n">v</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obs</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span>
+        <span class="n">mem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_esm</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">obs</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">mem</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_channels_in</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linear</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Next, we instantiate this model, and verify that the returned tensors are of the expected shape.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># create model</span>
+<span class="n">in_channels</span> <span class="o">=</span> <span class="mi">32</span>
+<span class="n">out_channels</span> <span class="o">=</span> <span class="mi">8</span>
+<span class="n">ivy</span><span class="o">.</span><span class="n">set_framework</span><span class="p">(</span><span class="s1">&#39;torch&#39;</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">IvyModel</span><span class="p">(</span><span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">)</span>
+
+<span class="c1"># input config</span>
+<span class="n">batch_size</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">image_dims</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+<span class="n">num_frames</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">num_feature_channels</span> <span class="o">=</span> <span class="mi">3</span>
+
+<span class="c1"># create image of pixel co-ordinates</span>
+<span class="n">uniform_pixel_coords</span> <span class="o">=</span>\
+    <span class="n">ivy_vision</span><span class="o">.</span><span class="n">create_uniform_pixel_coords_image</span><span class="p">(</span><span class="n">image_dims</span><span class="p">,</span> <span class="p">[</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_frames</span><span class="p">])</span>
+
+<span class="c1"># define image measurement</span>
+<span class="n">img_mean</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">uniform_pixel_coords</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">],</span> <span class="n">ivy</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">(</span>
+    <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_frames</span><span class="p">]</span> <span class="o">+</span> <span class="n">image_dims</span> <span class="o">+</span> <span class="p">[</span><span class="mi">1</span> <span class="o">+</span> <span class="n">num_feature_channels</span><span class="p">])),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">img_var</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_frames</span><span class="p">]</span> <span class="o">+</span> <span class="n">image_dims</span> <span class="o">+</span> <span class="p">[</span><span class="mi">1</span> <span class="o">+</span> <span class="n">num_feature_channels</span><span class="p">])</span>
+<span class="n">validity_mask</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_frames</span><span class="p">]</span> <span class="o">+</span> <span class="n">image_dims</span> <span class="o">+</span> <span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">pose_mean</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_frames</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
+<span class="n">pose_cov</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_frames</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
+<span class="n">cam_rel_mat</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">batch_shape</span><span class="o">=</span><span class="p">[</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_frames</span><span class="p">])[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:]</span>
+
+<span class="c1"># place these into an ESM image measurement container</span>
+<span class="n">esm_img_meas</span> <span class="o">=</span> <span class="n">ESMImageMeasurement</span><span class="p">(</span>
+    <span class="n">img_mean</span><span class="o">=</span><span class="n">img_mean</span><span class="p">,</span>
+    <span class="n">img_var</span><span class="o">=</span><span class="n">img_var</span><span class="p">,</span>
+    <span class="n">validity_mask</span><span class="o">=</span><span class="n">validity_mask</span><span class="p">,</span>
+    <span class="n">pose_mean</span><span class="o">=</span><span class="n">pose_mean</span><span class="p">,</span>
+    <span class="n">pose_cov</span><span class="o">=</span><span class="n">pose_cov</span><span class="p">,</span>
+    <span class="n">cam_rel_mat</span><span class="o">=</span><span class="n">cam_rel_mat</span>
+<span class="p">)</span>
+
+<span class="c1"># define agent pose transformation</span>
+<span class="n">control_mean</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_frames</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
+<span class="n">control_cov</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_frames</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
+<span class="n">agent_rel_mat</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">batch_shape</span><span class="o">=</span><span class="p">[</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_frames</span><span class="p">])[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:]</span>
+
+<span class="c1"># collect together into an ESM observation container</span>
+<span class="n">esm_obs</span> <span class="o">=</span> <span class="n">ESMObservation</span><span class="p">(</span>
+    <span class="n">img_meas</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;camera_0&#39;</span><span class="p">:</span> <span class="n">esm_img_meas</span><span class="p">},</span>
+    <span class="n">control_mean</span><span class="o">=</span><span class="n">control_mean</span><span class="p">,</span>
+    <span class="n">control_cov</span><span class="o">=</span><span class="n">control_cov</span><span class="p">,</span>
+    <span class="n">agent_rel_mat</span><span class="o">=</span><span class="n">agent_rel_mat</span>
+<span class="p">)</span>
+
+<span class="c1"># call model and test output</span>
+<span class="n">output</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">esm_obs</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">output</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">out_channels</span>
+</pre></div>
+</div>
+<p>Finally, we define a dummy loss function, and show how the NTM can be trained using Ivy functions only.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># define loss function</span>
+<span class="n">target</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">loss_fn</span><span class="p">(</span><span class="n">var</span><span class="p">):</span>
+    <span class="n">pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">esm_obs</span><span class="p">,</span> <span class="n">var</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">((</span><span class="n">pred</span> <span class="o">-</span> <span class="n">target</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+
+<span class="c1"># train model</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">training dummy Ivy ESM model...</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+    <span class="n">loss</span><span class="p">,</span> <span class="n">grads</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">execute_with_gradients</span><span class="p">(</span><span class="n">loss_fn</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">gradient_descent_update</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">,</span> <span class="mf">1e-4</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;step {}, loss = {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()))</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">dummy Ivy ESM model trained!</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">ivy</span><span class="o">.</span><span class="n">unset_framework</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><strong>Neural Turing Machine</strong></p>
+<p>We next show how the Ivy Neural Turing Machine (NTM) class can be used inside a TensorFlow model.
+First, we define the model as below.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">TfModel</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channels_in</span><span class="p">,</span> <span class="n">channels_out</span><span class="p">):</span>
+        <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_linear</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">64</span><span class="p">)</span>
+        <span class="n">memory_size</span> <span class="o">=</span> <span class="mi">4</span>
+        <span class="n">memory_vector_dim</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ntm</span> <span class="o">=</span> <span class="n">ivy_mem</span><span class="o">.</span><span class="n">NTM</span><span class="p">(</span>
+            <span class="n">input_dim</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">output_dim</span><span class="o">=</span><span class="n">channels_out</span><span class="p">,</span> <span class="n">ctrl_output_size</span><span class="o">=</span><span class="n">channels_out</span><span class="p">,</span> <span class="n">ctrl_layers</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">memory_size</span><span class="o">=</span><span class="n">memory_size</span><span class="p">,</span> <span class="n">memory_vector_dim</span><span class="o">=</span><span class="n">memory_vector_dim</span><span class="p">,</span> <span class="n">read_head_num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">write_head_num</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_assign_variables</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_assign_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ntm</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
+            <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_weight</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">kc</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_weights</span><span class="p">([</span><span class="n">ivy</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ntm</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">to_iterator</span><span class="p">()])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trainable_weights_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">weight</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">trainable_weights</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trainable_weights_dict</span><span class="p">[</span><span class="n">weight</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">weight</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ntm</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ntm</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">trainable_weights_dict</span><span class="p">[</span><span class="n">kc</span> <span class="o">+</span> <span class="s1">&#39;:0&#39;</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linear</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ntm</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Next, we instantiate this model, and verify that the returned tensors are of the expected shape.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># create model</span>
+<span class="n">in_channels</span> <span class="o">=</span> <span class="mi">32</span>
+<span class="n">out_channels</span> <span class="o">=</span> <span class="mi">8</span>
+<span class="n">ivy</span><span class="o">.</span><span class="n">set_framework</span><span class="p">(</span><span class="s1">&#39;tensorflow&#39;</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">TfModel</span><span class="p">(</span><span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">)</span>
+
+<span class="c1"># define inputs</span>
+<span class="n">batch_shape</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+<span class="n">timesteps</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">input_shape</span> <span class="o">=</span> <span class="n">batch_shape</span> <span class="o">+</span> <span class="p">[</span><span class="n">timesteps</span><span class="p">,</span> <span class="n">in_channels</span><span class="p">]</span>
+<span class="n">input_seq</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">batch_shape</span> <span class="o">+</span> <span class="p">[</span><span class="n">timesteps</span><span class="p">,</span> <span class="n">in_channels</span><span class="p">])</span>
+
+<span class="c1"># call model and test output</span>
+<span class="n">output_seq</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">input_seq</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">input_seq</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">output_seq</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="k">assert</span> <span class="n">input_seq</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">in_channels</span>
+<span class="k">assert</span> <span class="n">output_seq</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">out_channels</span>
+</pre></div>
+</div>
+<p>Finally, we define a dummy loss function, and show how the NTM can be trained using a native TensorFlow optimizer.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># define loss function</span>
+<span class="n">target</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">output_seq</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">loss_fn</span><span class="p">():</span>
+    <span class="n">pred</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">input_seq</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">((</span><span class="n">pred</span> <span class="o">-</span> <span class="n">target</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+
+<span class="c1"># define optimizer</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">optimizers</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="mf">1e-2</span><span class="p">)</span>
+
+<span class="c1"># train model</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">training dummy TensorFlow NTM model...</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">GradientTape</span><span class="p">()</span> <span class="k">as</span> <span class="n">tape</span><span class="p">:</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">loss_fn</span><span class="p">()</span>
+    <span class="n">grads</span> <span class="o">=</span> <span class="n">tape</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">trainable_weights</span><span class="p">)</span>
+    <span class="n">optimizer</span><span class="o">.</span><span class="n">apply_gradients</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">grads</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">trainable_weights</span><span class="p">))</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;step {}, loss = {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">loss</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">dummy TensorFlow NTM model trained!</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">ivy</span><span class="o">.</span><span class="n">unset_framework</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="interactive-demos">
+<h1>Interactive Demos<a class="headerlink" href="#interactive-demos" title="Permalink to this headline">¶</a></h1>
+<p>In addition to the run through above, we provide two further demo scripts,
+which are more visual and interactive.</p>
+<p>The scripts for these demos can be found in the <a class="reference external" href="https://github.com/ivy-dl/memory/tree/master/demos/interactive">interactive</a> demos folder.</p>
+<p><strong>Learning to Copy with NTM</strong></p>
+<p>The first demo trains a Neural Turing Machine to copy a sequence from one memory bank to another.
+NTM can overfit to a single copy sequence very quickly, as show in the real-time visualization below.</p>
+<p align="center">
+    <img width="75%" style="display: block;" src='https://github.com/ivy-dl/ivy-dl.github.io/blob/master/img/externally_linked/ivy_memory/demo_a.gif?raw=true'>
+</p><p><strong>Mapping a Room with ESM</strong></p>
+<p>The second demo creates an egocentric map of a room, from a rotating camera.
+The raw image observations are shown on the left,
+and the incrementally constructed omni-directional ESM feature and depth images are shown on the right.
+While this example only projects color values into the memory, arbitrary neural network features can also be projected, for end-to-end training.</p>
+<p align="center">
+    <img width="75%" style="display: block;" src='https://github.com/ivy-dl/ivy-dl.github.io/blob/master/img/externally_linked/ivy_memory/demo_b.gif?raw=true'>
+</p></div>
+<div class="section" id="get-involed">
+<h1>Get Involed<a class="headerlink" href="#get-involed" title="Permalink to this headline">¶</a></h1>
+<p>We hope the memory classes in this library are useful to a wide range of deep learning developers.
+However, there are many more areas of differentiable memory which could be covered by this library.</p>
+<p>If there are any particular functions or classes you feel are missing,
+and your needs are not met by the functions currently on offer,
+then we are very happy to accept pull requests!</p>
+<p>We look forward to working with the community on expanding and improving the Ivy memory library.</p>
+</div>
+<div class="section" id="citation">
+<h1>Citation<a class="headerlink" href="#citation" title="Permalink to this headline">¶</a></h1>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@article</span><span class="p">{</span><span class="n">lenton2021ivy</span><span class="p">,</span>
+  <span class="n">title</span><span class="o">=</span><span class="p">{</span><span class="n">Ivy</span><span class="p">:</span> <span class="n">Templated</span> <span class="n">Deep</span> <span class="n">Learning</span> <span class="k">for</span> <span class="n">Inter</span><span class="o">-</span><span class="n">Framework</span> <span class="n">Portability</span><span class="p">},</span>
+  <span class="n">author</span><span class="o">=</span><span class="p">{</span><span class="n">Lenton</span><span class="p">,</span> <span class="n">Daniel</span> <span class="ow">and</span> <span class="n">Pardo</span><span class="p">,</span> <span class="n">Fabio</span> <span class="ow">and</span> <span class="n">Falck</span><span class="p">,</span> <span class="n">Fabian</span> <span class="ow">and</span> <span class="n">James</span><span class="p">,</span> <span class="n">Stephen</span> <span class="ow">and</span> <span class="n">Clark</span><span class="p">,</span> <span class="n">Ronald</span><span class="p">},</span>
+  <span class="n">journal</span><span class="o">=</span><span class="p">{</span><span class="n">arXiv</span> <span class="n">preprint</span> <span class="n">arXiv</span><span class="p">:</span><span class="mf">2102.02886</span><span class="p">},</span>
+  <span class="n">year</span><span class="o">=</span><span class="p">{</span><span class="mi">2021</span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
 <div class="section" id="documentation-tree">
 <h1>Documentation Tree<a class="headerlink" href="#documentation-tree" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Learnt</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="learnt/linear.html">Linear</a><ul class="simple">
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="learnt/lstm.html">Lstm</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="learnt/lstm/lstm.html">lstm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="learnt/lstm/lstm_update.html">lstm_update</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="learnt/ntm.html">Ntm</a><ul class="simple">
 </ul>
 </li>
 </ul>
@@ -258,7 +499,7 @@ Click on the icons below for their respective github pages.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="learnt/lstm.html" class="btn btn-neutral float-right" title="Lstm" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="learnt/linear.html" class="btn btn-neutral float-right" title="Linear" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
     </div>

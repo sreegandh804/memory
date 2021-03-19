@@ -35,8 +35,8 @@
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="lstm" href="lstm/lstm.html" />
-    <link rel="prev" title="Overview" href="../index.html" /> 
+    <link rel="next" title="lstm_update" href="lstm/lstm_update.html" />
+    <link rel="prev" title="Linear" href="linear.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -82,10 +82,12 @@
             
               <p class="caption"><span class="caption-text">Learnt</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="linear.html">Linear</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Lstm</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="lstm/lstm.html">lstm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lstm/lstm_update.html">lstm_update</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="ntm.html">Ntm</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Docs</span></p>
 <ul>
@@ -159,12 +161,85 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="lstm">
-<h1>Lstm<a class="headerlink" href="#lstm" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-ivy_memory.learnt.lstm">
+<span id="lstm"></span><h1>Lstm<a class="headerlink" href="#module-ivy_memory.learnt.lstm" title="Permalink to this headline">¶</a></h1>
+<p>Ivy LSTM implementation</p>
+<dl class="py function">
+<dt id="ivy_memory.learnt.lstm.lstm_update">
+<code class="sig-prename descclassname"><span class="pre">ivy_memory.learnt.lstm.</span></code><code class="sig-name descname"><span class="pre">lstm_update</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_h</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recurrent_kernel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recurrent_bias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy_memory/learnt/lstm.html#lstm_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_memory.learnt.lstm.lstm_update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform long-short term memory update by unrolling time dimension of input array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – input tensor of LSTM layer <em>[batch_shape, t, in]</em>.</p></li>
+<li><p><strong>init_h</strong> (<em>array</em>) – initial state tensor for the cell output <em>[batch_shape, out]</em>.</p></li>
+<li><p><strong>init_c</strong> (<em>array</em>) – initial state tensor for the cell hidden state <em>[batch_shape, out]</em>.</p></li>
+<li><p><strong>kernel</strong> (<em>array</em>) – weights for cell kernel <em>[in, 4 x out]</em>.</p></li>
+<li><p><strong>recurrent_kernel</strong> (<em>array</em>) – weights for cell recurrent kernel <em>[out, 4 x out]</em>.</p></li>
+<li><p><strong>bias</strong> (<em>array</em>) – bias for cell kernel <em>[4 x out]</em>.</p></li>
+<li><p><strong>recurrent_bias</strong> (<em>array</em>) – bias for cell recurrent kernel <em>[4 x out]</em>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>hidden state for all timesteps <em>[batch_shape,t,out]</em> and cell state for last timestep <em>[batch_shape,out]</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt id="ivy_memory.learnt.lstm.LSTM">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ivy_memory.learnt.lstm.</span></code><code class="sig-name descname"><span class="pre">LSTM</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_layers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_sequence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy_memory/learnt/lstm.html#LSTM"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_memory.learnt.lstm.LSTM" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="ivy_memory.learnt.lstm.LSTM.__init__">
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_layers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_sequence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy_memory/learnt/lstm.html#LSTM.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_memory.learnt.lstm.LSTM.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct LSTM layer</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_channels</strong> (<em>int</em>) – Number of input channels for the layer</p></li>
+<li><p><strong>output_channels</strong> (<em>int</em>) – Number of output channels for the layer</p></li>
+<li><p><strong>num_layers</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of lstm cells in the lstm layer, default is 1.</p></li>
+<li><p><strong>return_sequence</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether or not to return the entire output sequence, or just the latest timestep.
+Default is True.</p></li>
+<li><p><strong>return_state</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether or not to return the latest hidden and cell states. Default is True.</p></li>
+<li><p><strong>v</strong> (<em>ivy container of parameter arrays</em><em>, </em><em>optional</em>) – the variables for each of the lstm cells, as a container, constructed internally by default.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy_memory.learnt.lstm.LSTM.forward">
+<code class="sig-name descname"><span class="pre">forward</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy_memory/learnt/lstm.html#LSTM.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_memory.learnt.lstm.LSTM.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform forward pass of the lstm layer, which is a set of stacked lstm cells.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inputs</strong> (<em>array</em>) – Inputs to process <em>[batch_shape, t, in]</em>.</p></li>
+<li><p><strong>initial_state</strong> (<em>tuple of list of arrays</em><em>, </em><em>optional</em>) – 2-tuple of lists of the hidden states h and c for each layer, each of dimension <em>[batch_shape,out]</em>.
+Created internally if None.</p></li>
+<li><p><strong>v</strong> (<em>ivy container of parameter arrays</em><em>, </em><em>optional</em>) – the variables for each of the lstm cells, as a container, use internal variables by default.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The outputs of the final lstm layer <em>[batch_shape, t, out]</em> and the hidden state tuple of lists,
+each of dimension <em>[batch_shape, out]</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy_memory.learnt.lstm.LSTM.get_initial_state">
+<code class="sig-name descname"><span class="pre">get_initial_state</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch_shape</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy_memory/learnt/lstm.html#LSTM.get_initial_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_memory.learnt.lstm.LSTM.get_initial_state" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Lstm</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="lstm/lstm.html">lstm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lstm/lstm_update.html">lstm_update</a></li>
 </ul>
 </div>
 </div>
@@ -177,10 +252,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="lstm/lstm.html" class="btn btn-neutral float-right" title="lstm" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="lstm/lstm_update.html" class="btn btn-neutral float-right" title="lstm_update" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../index.html" class="btn btn-neutral float-left" title="Overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="linear.html" class="btn btn-neutral float-left" title="Linear" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

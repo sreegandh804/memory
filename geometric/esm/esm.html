@@ -1,0 +1,248 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Esm &mdash; Ivy Memory 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Ivy Memory
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Learnt</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../learnt/linear.html">Linear</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../learnt/lstm.html">Lstm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../learnt/ntm.html">Ntm</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../ivy"">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../mech"">Ivy Mech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../vision"">Ivy Vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../robot"">Ivy Robot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../memory"">Ivy Memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../gym"">Ivy Gym</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Ivy Memory</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+      <li>Esm</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/geometric/esm/esm.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-ivy_memory.geometric.esm.esm">
+<span id="esm"></span><h1>Esm<a class="headerlink" href="#module-ivy_memory.geometric.esm.esm" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="ivy_memory.geometric.esm.esm.ESM">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ivy_memory.geometric.esm.esm.</span></code><code class="sig-name descname"><span class="pre">ESM</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">depth_prior</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feat_prior</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_feature_channels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth_kernel_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold_var_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.99</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth_limits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.001,</span> <span class="pre">10.0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth_var_limits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.001,</span> <span class="pre">10000.0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feat_var_limits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.001,</span> <span class="pre">10000.0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">omni_image_dims</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(180,</span> <span class="pre">360)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth_mean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth_buffer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stateful</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy_memory/geometric/esm/esm.html#ESM"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_memory.geometric.esm.esm.ESM" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="ivy_memory.geometric.esm.esm.ESM.__init__">
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">depth_prior</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feat_prior</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_feature_channels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth_kernel_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold_var_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.99</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth_limits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.001,</span> <span class="pre">10.0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth_var_limits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.001,</span> <span class="pre">10000.0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feat_var_limits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.001,</span> <span class="pre">10000.0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">omni_image_dims</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(180,</span> <span class="pre">360)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth_mean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth_buffer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stateful</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy_memory/geometric/esm/esm.html#ESM.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_memory.geometric.esm.esm.ESM.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy_memory.geometric.esm.esm.ESM.empty_memory">
+<code class="sig-name descname"><span class="pre">empty_memory</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timesteps</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy_memory/geometric/esm/esm.html#ESM.empty_memory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_memory.geometric.esm.esm.ESM.empty_memory" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ivy_memory.geometric.esm.esm.ESM.smooth">
+<code class="sig-name descname"><span class="pre">smooth</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fused_val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fused_variance</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">low_var_mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth_mean</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth_kernel_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variance_mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fix_low_var_pixels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feat_idx</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy_memory/geometric/esm/esm.html#ESM.smooth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_memory.geometric.esm.esm.ESM.smooth" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ivy_memory.geometric.esm.esm.ESM.forward">
+<code class="sig-name descname"><span class="pre">forward</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="containers/ESMObservation.html#ivy_memory.geometric.esm.containers.ESMObservation" title="ivy_memory.geometric.esm.containers.ESMObservation"><span class="pre">ivy_memory.geometric.esm.containers.ESMObservation</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="containers/ESMMemory.html#ivy_memory.geometric.esm.containers.ESMMemory" title="ivy_memory.geometric.esm.containers.ESMMemory"><span class="pre">ivy_memory.geometric.esm.containers.ESMMemory</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_timesteps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_cams</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_dims</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy_memory/geometric/esm/esm.html#ESM.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_memory.geometric.esm.esm.ESM.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform ESM update step.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>obs</strong> (<a class="reference internal" href="containers/ESMObservation.html#ivy_memory.geometric.esm.containers.ESMObservation" title="ivy_memory.geometric.esm.containers.ESMObservation"><em>ESMObservation</em></a>) – Observations</p></li>
+<li><p><strong>memory</strong> (<a class="reference internal" href="containers/ESMMemory.html#ivy_memory.geometric.esm.containers.ESMMemory" title="ivy_memory.geometric.esm.containers.ESMMemory"><em>ESMMemory</em></a><em>, </em><em>optional.</em>) – Memory from the previous time-step, uses internal parameter if None.</p></li>
+<li><p><strong>batch_size</strong> (<em>int</em><em>, </em><em>optional</em>) – Size of batch, inferred from inputs if None.</p></li>
+<li><p><strong>num_timesteps</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of timesteps, inferred from inputs if None.</p></li>
+<li><p><strong>num_cams</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of cameras, inferred from inputs if None.</p></li>
+<li><p><strong>image_dims</strong> (<em>sequence of ints</em><em>, </em><em>optional</em>) – Image dimensions of captured images, inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>New memory of type ESMMemory</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<div class="toctree-wrapper compound">
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Ivy Team
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
