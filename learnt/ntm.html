@@ -36,7 +36,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Ivy" href="../../ivy"" />
-    <link rel="prev" title="lstm_update" href="lstm/lstm_update.html" /> 
+    <link rel="prev" title="Contents" href="../index.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -82,8 +82,6 @@
             
               <p class="caption"><span class="caption-text">Learnt</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="linear.html">Linear</a></li>
-<li class="toctree-l1"><a class="reference internal" href="lstm.html">Lstm</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Ntm</a><ul class="simple">
 </ul>
 </li>
@@ -160,84 +158,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-ivy_memory.learnt.ntm">
-<span id="ntm"></span><h1>Ntm<a class="headerlink" href="#module-ivy_memory.learnt.ntm" title="Permalink to this headline">¶</a></h1>
-<p>Implementation of Neural Turing Machine</p>
-<dl class="py class">
-<dt id="ivy_memory.learnt.ntm.NTMControllerState">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ivy_memory.learnt.ntm.</span></code><code class="sig-name descname"><span class="pre">NTMControllerState</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">controller_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">read_vector_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usage_indicator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">M</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ivy_memory.learnt.ntm.NTMControllerState" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
-<dl class="py attribute">
-<dt id="ivy_memory.learnt.ntm.NTMControllerState.M">
-<code class="sig-name descname"><span class="pre">M</span></code><a class="headerlink" href="#ivy_memory.learnt.ntm.NTMControllerState.M" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 4</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="ivy_memory.learnt.ntm.NTMControllerState.controller_state">
-<code class="sig-name descname"><span class="pre">controller_state</span></code><a class="headerlink" href="#ivy_memory.learnt.ntm.NTMControllerState.controller_state" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 0</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="ivy_memory.learnt.ntm.NTMControllerState.read_vector_list">
-<code class="sig-name descname"><span class="pre">read_vector_list</span></code><a class="headerlink" href="#ivy_memory.learnt.ntm.NTMControllerState.read_vector_list" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 1</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="ivy_memory.learnt.ntm.NTMControllerState.usage_indicator">
-<code class="sig-name descname"><span class="pre">usage_indicator</span></code><a class="headerlink" href="#ivy_memory.learnt.ntm.NTMControllerState.usage_indicator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 3</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="ivy_memory.learnt.ntm.NTMControllerState.w_list">
-<code class="sig-name descname"><span class="pre">w_list</span></code><a class="headerlink" href="#ivy_memory.learnt.ntm.NTMControllerState.w_list" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 2</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt id="ivy_memory.learnt.ntm.NTMCell">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ivy_memory.learnt.ntm.</span></code><code class="sig-name descname"><span class="pre">NTMCell</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">controller</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">controller_proj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_proj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ctrl_input_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ctrl_output_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">total_parameter_num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory_vector_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">read_head_num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_head_num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">addressing_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'content_and_location'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shift_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clip_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-06</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sequential_writing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retroactive_updates</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retroactive_discount</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.96</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_erase</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy_memory/learnt/ntm.html#NTMCell"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_memory.learnt.ntm.NTMCell" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="py method">
-<dt id="ivy_memory.learnt.ntm.NTMCell.__init__">
-<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">controller</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">controller_proj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_proj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ctrl_input_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ctrl_output_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">total_parameter_num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory_vector_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">read_head_num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_head_num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">addressing_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'content_and_location'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shift_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clip_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-06</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sequential_writing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retroactive_updates</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retroactive_discount</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.96</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_erase</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy_memory/learnt/ntm.html#NTMCell.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_memory.learnt.ntm.NTMCell.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="ivy_memory.learnt.ntm.NTMCell.get_start_state">
-<code class="sig-name descname"><span class="pre">get_start_state</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy_memory/learnt/ntm.html#NTMCell.get_start_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_memory.learnt.ntm.NTMCell.get_start_state" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="ivy_memory.learnt.ntm.NTMCell.forward">
-<code class="sig-name descname"><span class="pre">forward</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prev_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy_memory/learnt/ntm.html#NTMCell.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_memory.learnt.ntm.NTMCell.forward" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt id="ivy_memory.learnt.ntm.NTM">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ivy_memory.learnt.ntm.</span></code><code class="sig-name descname"><span class="pre">NTM</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ctrl_output_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ctrl_layers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory_vector_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">read_head_num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_head_num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">addressing_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'content_and_location'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shift_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clip_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-06</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sequential_writing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retroactive_updates</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retroactive_discount</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.96</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_erase</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy_memory/learnt/ntm.html#NTM"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_memory.learnt.ntm.NTM" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="py method">
-<dt id="ivy_memory.learnt.ntm.NTM.__init__">
-<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ctrl_output_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ctrl_layers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory_vector_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">read_head_num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_head_num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">addressing_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'content_and_location'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shift_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clip_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-06</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sequential_writing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retroactive_updates</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retroactive_discount</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.96</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_erase</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy_memory/learnt/ntm.html#NTM.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_memory.learnt.ntm.NTM.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="ivy_memory.learnt.ntm.NTM.forward">
-<code class="sig-name descname"><span class="pre">forward</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hidden</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy_memory/learnt/ntm.html#NTM.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_memory.learnt.ntm.NTM.forward" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
+  <div class="section" id="ntm">
+<h1>Ntm<a class="headerlink" href="#ntm" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 </div>
 </div>
@@ -253,7 +175,7 @@
         <a href="../../ivy"" class="btn btn-neutral float-right" title="Ivy" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="lstm/lstm_update.html" class="btn btn-neutral float-left" title="lstm_update" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../index.html" class="btn btn-neutral float-left" title="Contents" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
