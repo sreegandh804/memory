@@ -12,9 +12,6 @@ Ntm
    :maxdepth: -1
    :caption: Ntm
 
-   ntm/NTMCell:
-    def __init__.rst
-   ntm/NTM:
-
-    def __init__.rst
+   ntm/NTMCell.rst
+   ntm/NTM.rst
 

@@ -12,7 +12,5 @@ Esm
    :maxdepth: -1
    :caption: Esm
 
-   esm/ESM:
-
-    def __init__.rst
+   esm/ESM.rst
 
