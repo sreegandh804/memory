@@ -254,33 +254,22 @@ and read the “Run Through” section below which explains this script.</p>
 <div class="section" id="run-through">
 <h1>Run Through<a class="headerlink" href="#run-through" title="Permalink to this headline">¶</a></h1>
 <p>We run through some of the different parts of the library via a simple ongoing example script.
-The full script is available in the <a class="reference external" href="https://github.com/ivy-dl/memory/tree/master/demos">demos</a> folder, as file <code class="docutils literal notranslate"><span class="pre">run_through.py</span></code>.
-First, we select a random backend framework to use for the examples, from the options
-<code class="docutils literal notranslate"><span class="pre">ivy.jax</span></code>, <code class="docutils literal notranslate"><span class="pre">ivy.tensorflow</span></code>, <code class="docutils literal notranslate"><span class="pre">ivy.torch</span></code>, <code class="docutils literal notranslate"><span class="pre">ivy.mxnd</span></code> or <code class="docutils literal notranslate"><span class="pre">ivy.numpy</span></code>,
-and use this to set the ivy backend framework.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ivy</span>
-<span class="kn">import</span> <span class="nn">ivy_memory</span> <span class="kn">as</span> <span class="nn">ivy_mem</span>
-<span class="kn">from</span> <span class="nn">ivy_demo_utils.framework_utils</span> <span class="kn">import</span> <span class="n">choose_random_framework</span>
-<span class="n">ivy</span><span class="o">.</span><span class="n">set_framework</span><span class="p">(</span><span class="n">choose_random_framework</span><span class="p">())</span>
-</pre></div>
-</div>
+The full script is available in the <a class="reference external" href="https://github.com/ivy-dl/memory/tree/master/demos">demos</a> folder, as file <code class="docutils literal notranslate"><span class="pre">run_through.py</span></code>.</p>
 <p><strong>End-to-End Egospheric Spatial Memory</strong></p>
 <p>First, we show how the Ivy End-to-End Egospheric Spatial Memory (ESM) class can be used inside a pure-Ivy model.
 We first define the model as below.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">IvyModel</span><span class="p">:</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">IvyModelWithESM</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channels_in</span><span class="p">,</span> <span class="n">channels_out</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_channels_in</span> <span class="o">=</span> <span class="n">channels_in</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_esm</span> <span class="o">=</span> <span class="n">ivy_mem</span><span class="o">.</span><span class="n">ESM</span><span class="p">(</span><span class="n">omni_image_dims</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">32</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_linear</span> <span class="o">=</span> <span class="n">ivy_mem</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">channels_in</span><span class="p">,</span> <span class="n">channels_out</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linear</span><span class="o">.</span><span class="n">v</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;cpu&#39;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obs</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span>
-        <span class="n">mem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_esm</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">obs</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obs</span><span class="p">):</span>
+        <span class="n">mem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_esm</span><span class="p">(</span><span class="n">obs</span><span class="p">)</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">mem</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_channels_in</span><span class="p">))</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linear</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linear</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Next, we instantiate this model, and verify that the returned tensors are of the expected shape.</p>
@@ -288,68 +277,63 @@ We first define the model as below.</p>
 <span class="n">in_channels</span> <span class="o">=</span> <span class="mi">32</span>
 <span class="n">out_channels</span> <span class="o">=</span> <span class="mi">8</span>
 <span class="n">ivy</span><span class="o">.</span><span class="n">set_framework</span><span class="p">(</span><span class="s1">&#39;torch&#39;</span><span class="p">)</span>
-<span class="n">model</span> <span class="o">=</span> <span class="n">IvyModel</span><span class="p">(</span><span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">IvyModelWithESM</span><span class="p">(</span><span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">)</span>
 
 <span class="c1"># input config</span>
 <span class="n">batch_size</span> <span class="o">=</span> <span class="mi">1</span>
 <span class="n">image_dims</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
-<span class="n">num_frames</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">num_timesteps</span> <span class="o">=</span> <span class="mi">2</span>
 <span class="n">num_feature_channels</span> <span class="o">=</span> <span class="mi">3</span>
 
 <span class="c1"># create image of pixel co-ordinates</span>
 <span class="n">uniform_pixel_coords</span> <span class="o">=</span>\
-    <span class="n">ivy_vision</span><span class="o">.</span><span class="n">create_uniform_pixel_coords_image</span><span class="p">(</span><span class="n">image_dims</span><span class="p">,</span> <span class="p">[</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_frames</span><span class="p">])</span>
+    <span class="n">ivy_vision</span><span class="o">.</span><span class="n">create_uniform_pixel_coords_image</span><span class="p">(</span><span class="n">image_dims</span><span class="p">,</span> <span class="p">[</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_timesteps</span><span class="p">])</span>
 
-<span class="c1"># define image measurement</span>
-<span class="n">img_mean</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">uniform_pixel_coords</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">],</span> <span class="n">ivy</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">(</span>
-    <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_frames</span><span class="p">]</span> <span class="o">+</span> <span class="n">image_dims</span> <span class="o">+</span> <span class="p">[</span><span class="mi">1</span> <span class="o">+</span> <span class="n">num_feature_channels</span><span class="p">])),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">img_var</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_frames</span><span class="p">]</span> <span class="o">+</span> <span class="n">image_dims</span> <span class="o">+</span> <span class="p">[</span><span class="mi">1</span> <span class="o">+</span> <span class="n">num_feature_channels</span><span class="p">])</span>
-<span class="n">validity_mask</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_frames</span><span class="p">]</span> <span class="o">+</span> <span class="n">image_dims</span> <span class="o">+</span> <span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-<span class="n">pose_mean</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_frames</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
-<span class="n">pose_cov</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_frames</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
-<span class="n">cam_rel_mat</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">batch_shape</span><span class="o">=</span><span class="p">[</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_frames</span><span class="p">])[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:]</span>
+<span class="c1"># define camera measurement</span>
+<span class="n">depths</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_timesteps</span><span class="p">]</span> <span class="o">+</span> <span class="n">image_dims</span> <span class="o">+</span> <span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">pixel_coords</span> <span class="o">=</span> <span class="n">ivy_vision</span><span class="o">.</span><span class="n">depth_to_pixel_coords</span><span class="p">(</span><span class="n">depths</span><span class="p">)</span>
+<span class="n">inv_calib_mats</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_timesteps</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="n">cam_coords</span> <span class="o">=</span> <span class="n">ivy_vision</span><span class="o">.</span><span class="n">pixel_to_cam_coords</span><span class="p">(</span><span class="n">pixel_coords</span><span class="p">,</span> <span class="n">inv_calib_mats</span><span class="p">)[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+<span class="n">features</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_timesteps</span><span class="p">]</span> <span class="o">+</span> <span class="n">image_dims</span> <span class="o">+</span> <span class="p">[</span><span class="n">num_feature_channels</span><span class="p">])</span>
+<span class="n">img_mean</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">cam_coords</span><span class="p">,</span> <span class="n">features</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">cam_rel_mat</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">batch_shape</span><span class="o">=</span><span class="p">[</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_timesteps</span><span class="p">])[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:]</span>
 
-<span class="c1"># place these into an ESM image measurement container</span>
-<span class="n">esm_img_meas</span> <span class="o">=</span> <span class="n">ESMImageMeasurement</span><span class="p">(</span>
+<span class="c1"># place these into an ESM camera measurement container</span>
+<span class="n">esm_cam_meas</span> <span class="o">=</span> <span class="n">ESMCamMeasurement</span><span class="p">(</span>
     <span class="n">img_mean</span><span class="o">=</span><span class="n">img_mean</span><span class="p">,</span>
-    <span class="n">img_var</span><span class="o">=</span><span class="n">img_var</span><span class="p">,</span>
-    <span class="n">validity_mask</span><span class="o">=</span><span class="n">validity_mask</span><span class="p">,</span>
-    <span class="n">pose_mean</span><span class="o">=</span><span class="n">pose_mean</span><span class="p">,</span>
-    <span class="n">pose_cov</span><span class="o">=</span><span class="n">pose_cov</span><span class="p">,</span>
     <span class="n">cam_rel_mat</span><span class="o">=</span><span class="n">cam_rel_mat</span>
 <span class="p">)</span>
 
 <span class="c1"># define agent pose transformation</span>
-<span class="n">control_mean</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_frames</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
-<span class="n">control_cov</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_frames</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
-<span class="n">agent_rel_mat</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">batch_shape</span><span class="o">=</span><span class="p">[</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_frames</span><span class="p">])[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:]</span>
+<span class="n">agent_rel_mat</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">batch_shape</span><span class="o">=</span><span class="p">[</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_timesteps</span><span class="p">])[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:]</span>
 
 <span class="c1"># collect together into an ESM observation container</span>
 <span class="n">esm_obs</span> <span class="o">=</span> <span class="n">ESMObservation</span><span class="p">(</span>
-    <span class="n">img_meas</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;camera_0&#39;</span><span class="p">:</span> <span class="n">esm_img_meas</span><span class="p">},</span>
-    <span class="n">control_mean</span><span class="o">=</span><span class="n">control_mean</span><span class="p">,</span>
-    <span class="n">control_cov</span><span class="o">=</span><span class="n">control_cov</span><span class="p">,</span>
+    <span class="n">img_meas</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;camera_0&#39;</span><span class="p">:</span> <span class="n">esm_cam_meas</span><span class="p">},</span>
     <span class="n">agent_rel_mat</span><span class="o">=</span><span class="n">agent_rel_mat</span>
 <span class="p">)</span>
 
 <span class="c1"># call model and test output</span>
-<span class="n">output</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">esm_obs</span><span class="p">)</span>
+<span class="n">output</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">esm_obs</span><span class="p">)</span>
 <span class="k">assert</span> <span class="n">output</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">out_channels</span>
 </pre></div>
 </div>
-<p>Finally, we define a dummy loss function, and show how the NTM can be trained using Ivy functions only.</p>
+<p>Finally, we define a dummy loss function, and show how the ESM network can be trained using Ivy functions only.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># define loss function</span>
 <span class="n">target</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
 
-<span class="k">def</span> <span class="nf">loss_fn</span><span class="p">(</span><span class="n">var</span><span class="p">):</span>
-    <span class="n">pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">esm_obs</span><span class="p">,</span> <span class="n">var</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">loss_fn</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+    <span class="n">pred</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">esm_obs</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">v</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">((</span><span class="n">pred</span> <span class="o">-</span> <span class="n">target</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+
+<span class="c1"># optimizer</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">SGD</span><span class="p">(</span><span class="n">lr</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">)</span>
 
 <span class="c1"># train model</span>
 <span class="k">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">training dummy Ivy ESM model...</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
     <span class="n">loss</span><span class="p">,</span> <span class="n">grads</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">execute_with_gradients</span><span class="p">(</span><span class="n">loss_fn</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
-    <span class="n">model</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">gradient_descent_update</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">,</span> <span class="mf">1e-4</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">)</span>
     <span class="k">print</span><span class="p">(</span><span class="s1">&#39;step {}, loss = {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()))</span>
 <span class="k">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">dummy Ivy ESM model trained!</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
 <span class="n">ivy</span><span class="o">.</span><span class="n">unset_framework</span><span class="p">()</span>
@@ -358,7 +342,7 @@ We first define the model as below.</p>
 <p><strong>Neural Turing Machine</strong></p>
 <p>We next show how the Ivy Neural Turing Machine (NTM) class can be used inside a TensorFlow model.
 First, we define the model as below.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">TfModel</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">TfModelWithNTM</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channels_in</span><span class="p">,</span> <span class="n">channels_out</span><span class="p">):</span>
         <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -381,7 +365,7 @@ First, we define the model as below.</p>
 
     <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linear</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ntm</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ntm</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Next, we instantiate this model, and verify that the returned tensors are of the expected shape.</p>
@@ -389,7 +373,7 @@ First, we define the model as below.</p>
 <span class="n">in_channels</span> <span class="o">=</span> <span class="mi">32</span>
 <span class="n">out_channels</span> <span class="o">=</span> <span class="mi">8</span>
 <span class="n">ivy</span><span class="o">.</span><span class="n">set_framework</span><span class="p">(</span><span class="s1">&#39;tensorflow&#39;</span><span class="p">)</span>
-<span class="n">model</span> <span class="o">=</span> <span class="n">TfModel</span><span class="p">(</span><span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">TfModelWithNTM</span><span class="p">(</span><span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">)</span>
 
 <span class="c1"># define inputs</span>
 <span class="n">batch_shape</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
