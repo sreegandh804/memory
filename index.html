@@ -5,8 +5,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Contents &mdash; Ivy Memory 1.0 documentation</title>
@@ -80,11 +79,11 @@
               
             
             
-              <p><span class="caption-text">Learnt</span></p>
+              <p class="caption"><span class="caption-text">Learnt</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="learnt/ntm.html">Ntm</a></li>
 </ul>
-<p><span class="caption-text">Docs</span></p>
+<p class="caption"><span class="caption-text">Docs</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../ivy"">Ivy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../mech"">Ivy Mech</a></li>
@@ -195,7 +194,7 @@
     <a href="https://numpy.org">
         <img width="12%" style="float: left;" src="https://raw.githubusercontent.com/ivy-dl/ivy-dl.github.io/master/img/externally_linked/logos/supported/numpy_logo.png">
     </a>
-</div><section id="contents">
+</div><div class="section" id="contents">
 <h1>Contents<a class="headerlink" href="#contents" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
 <li><p><a class="reference internal" href="#overview">Overview</a></p></li>
@@ -203,8 +202,8 @@
 <li><p><a class="reference internal" href="#interactive-demos">Interactive Demos</a></p></li>
 <li><p><a class="reference internal" href="#get-involed">Get Involed</a></p></li>
 </ul>
-</section>
-<section id="overview">
+</div>
+<div class="section" id="overview">
 <h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h1>
 <p><strong>What is Ivy Memory?</strong></p>
 <p>Ivy memory provides differentiable memory modules,
@@ -248,8 +247,8 @@ We suggest you start by running the script <code class="docutils literal notrans
 and read the “Run Through” section below which explains this script.</p>
 <p>For more interactive demos, we suggest you run either
 <code class="docutils literal notranslate"><span class="pre">learning_to_copy_with_ntm.py</span></code> or <code class="docutils literal notranslate"><span class="pre">mapping_a_room_with_esm.py</span></code> in the <a class="reference external" href="https://github.com/ivy-dl/memory/tree/master/demos/interactive">interactive</a> demos folder.</p>
-</section>
-<section id="run-through">
+</div>
+<div class="section" id="run-through">
 <h1>Run Through<a class="headerlink" href="#run-through" title="Permalink to this headline">¶</a></h1>
 <p>We run through some of the different parts of the library via a simple ongoing example script.
 The full script is available in the <a class="reference external" href="https://github.com/ivy-dl/memory/tree/master/demos">demos</a> folder, as file <code class="docutils literal notranslate"><span class="pre">run_through.py</span></code>.</p>
@@ -328,12 +327,12 @@ We first define the model as below.</p>
 <span class="n">optimizer</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">SGD</span><span class="p">(</span><span class="n">lr</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">)</span>
 
 <span class="c1"># train model</span>
-<span class="k">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">training dummy Ivy ESM model...</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">training dummy Ivy ESM model...</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
     <span class="n">loss</span><span class="p">,</span> <span class="n">grads</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">execute_with_gradients</span><span class="p">(</span><span class="n">loss_fn</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
     <span class="n">model</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">)</span>
-    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;step {}, loss = {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()))</span>
-<span class="k">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">dummy Ivy ESM model trained!</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;step </span><span class="si">{}</span><span class="s1">, loss = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">dummy Ivy ESM model trained!</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
 <span class="n">ivy</span><span class="o">.</span><span class="n">unset_framework</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -398,19 +397,19 @@ First, we define the model as below.</p>
 <span class="n">optimizer</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">optimizers</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="mf">1e-2</span><span class="p">)</span>
 
 <span class="c1"># train model</span>
-<span class="k">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">training dummy TensorFlow NTM model...</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">training dummy TensorFlow NTM model...</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
     <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">GradientTape</span><span class="p">()</span> <span class="k">as</span> <span class="n">tape</span><span class="p">:</span>
         <span class="n">loss</span> <span class="o">=</span> <span class="n">loss_fn</span><span class="p">()</span>
     <span class="n">grads</span> <span class="o">=</span> <span class="n">tape</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">trainable_weights</span><span class="p">)</span>
     <span class="n">optimizer</span><span class="o">.</span><span class="n">apply_gradients</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">grads</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">trainable_weights</span><span class="p">))</span>
-    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;step {}, loss = {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">loss</span><span class="p">))</span>
-<span class="k">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">dummy TensorFlow NTM model trained!</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;step </span><span class="si">{}</span><span class="s1">, loss = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">loss</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">dummy TensorFlow NTM model trained!</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
 <span class="n">ivy</span><span class="o">.</span><span class="n">unset_framework</span><span class="p">()</span>
 </pre></div>
 </div>
-</section>
-<section id="interactive-demos">
+</div>
+<div class="section" id="interactive-demos">
 <h1>Interactive Demos<a class="headerlink" href="#interactive-demos" title="Permalink to this headline">¶</a></h1>
 <p>In addition to the run through above, we provide two further demo scripts,
 which are more visual and interactive.</p>
@@ -427,8 +426,8 @@ and the incrementally constructed omni-directional ESM feature and depth images 
 While this example only projects color values into the memory, arbitrary neural network features can also be projected, for end-to-end training.</p>
 <p align="center">
     <img width="75%" style="display: block;" src='https://github.com/ivy-dl/ivy-dl.github.io/blob/master/img/externally_linked/ivy_memory/demo_b.gif?raw=true'>
-</p></section>
-<section id="get-involed">
+</p></div>
+<div class="section" id="get-involed">
 <h1>Get Involed<a class="headerlink" href="#get-involed" title="Permalink to this headline">¶</a></h1>
 <p>We hope the memory classes in this library are useful to a wide range of deep learning developers.
 However, there are many more areas of differentiable memory which could be covered by this library.</p>
@@ -436,8 +435,8 @@ However, there are many more areas of differentiable memory which could be cover
 and your needs are not met by the functions currently on offer,
 then we are very happy to accept pull requests!</p>
 <p>We look forward to working with the community on expanding and improving the Ivy memory library.</p>
-</section>
-<section id="citation">
+</div>
+<div class="section" id="citation">
 <h1>Citation<a class="headerlink" href="#citation" title="Permalink to this headline">¶</a></h1>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@article</span><span class="p">{</span><span class="n">lenton2021ivy</span><span class="p">,</span>
   <span class="n">title</span><span class="o">=</span><span class="p">{</span><span class="n">Ivy</span><span class="p">:</span> <span class="n">Templated</span> <span class="n">Deep</span> <span class="n">Learning</span> <span class="k">for</span> <span class="n">Inter</span><span class="o">-</span><span class="n">Framework</span> <span class="n">Portability</span><span class="p">},</span>
@@ -447,13 +446,13 @@ then we are very happy to accept pull requests!</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-</section>
-<section id="documentation-tree">
+</div>
+<div class="section" id="documentation-tree">
 <h1>Documentation Tree<a class="headerlink" href="#documentation-tree" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 </div>
 <div class="toctree-wrapper compound">
-<p><span class="caption-text">Learnt</span></p>
+<p class="caption"><span class="caption-text">Learnt</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="learnt/ntm.html">Ntm</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="learnt/ntm/NTMCell.html">NTMCell</a></li>
@@ -463,7 +462,7 @@ then we are very happy to accept pull requests!</p>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
-<p><span class="caption-text">Docs</span></p>
+<p class="caption"><span class="caption-text">Docs</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../ivy"">Ivy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../mech"">Ivy Mech</a></li>
@@ -473,7 +472,7 @@ then we are very happy to accept pull requests!</p>
 <li class="toctree-l1"><a class="reference internal" href="../gym"">Ivy Gym</a></li>
 </ul>
 </div>
-</section>
+</div>
 
 
            </div>

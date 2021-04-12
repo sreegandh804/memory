@@ -5,8 +5,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>ESMCamMeasurement &mdash; Ivy Memory 1.0 documentation</title>
@@ -79,11 +78,11 @@
               
             
             
-              <p><span class="caption-text">Learnt</span></p>
+              <p class="caption"><span class="caption-text">Learnt</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../learnt/ntm.html">Ntm</a></li>
 </ul>
-<p><span class="caption-text">Docs</span></p>
+<p class="caption"><span class="caption-text">Docs</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../ivy"">Ivy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../mech"">Ivy Mech</a></li>
@@ -155,15 +154,15 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="esmcammeasurement">
+  <div class="section" id="esmcammeasurement">
 <h1>ESMCamMeasurement<a class="headerlink" href="#esmcammeasurement" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt id="ivy_memory.geometric.esm.containers.ESMCamMeasurement">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ivy_memory.geometric.esm.containers.</span></code><code class="sig-name descname"><span class="pre">ESMCamMeasurement</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img_mean</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">ivy.Array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cam_rel_mat</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">ivy.Array</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_var</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">ivy.Array</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validity_mask</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">ivy.Array</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pose_mean</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">ivy.Array</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pose_cov</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">ivy.Array</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dev_str</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy_memory/geometric/esm/containers.html#ESMCamMeasurement"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_memory.geometric.esm.containers.ESMCamMeasurement" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ivy_memory.geometric.esm.containers.</code><code class="sig-name descname">ESMCamMeasurement</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">img_mean</span><span class="p">:</span> <span class="n">ivy.Array</span></em>, <em class="sig-param"><span class="n">cam_rel_mat</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Array<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">img_var</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Array<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">validity_mask</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Array<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pose_mean</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Array<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pose_cov</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Array<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy_memory/geometric/esm/containers.html#ESMCamMeasurement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy_memory.geometric.esm.containers.ESMCamMeasurement" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.core.container.Container</span></code></p>
 <dl class="py method">
 <dt id="ivy_memory.geometric.esm.containers.ESMCamMeasurement.__init__">
-<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img_mean</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">ivy.Array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cam_rel_mat</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">ivy.Array</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_var</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">ivy.Array</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validity_mask</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">ivy.Array</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pose_mean</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">ivy.Array</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pose_cov</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">ivy.Array</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dev_str</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy_memory/geometric/esm/containers.html#ESMCamMeasurement.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_memory.geometric.esm.containers.ESMCamMeasurement.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">img_mean</span><span class="p">:</span> <span class="n">ivy.Array</span></em>, <em class="sig-param"><span class="n">cam_rel_mat</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Array<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">img_var</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Array<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">validity_mask</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Array<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pose_mean</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Array<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pose_cov</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Array<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy_memory/geometric/esm/containers.html#ESMCamMeasurement.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy_memory.geometric.esm.containers.ESMCamMeasurement.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create esm image measurement container</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -193,33 +192,33 @@ Inferred from cam_rel_mat if None. <em>[batch_size, timesteps, 6]</em></p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt id="ivy_memory.geometric.esm.containers.ESMCamMeasurement.cam_rel_mat">
+<em class="property">property </em><code class="sig-name descname">cam_rel_mat</code><a class="headerlink" href="#ivy_memory.geometric.esm.containers.ESMCamMeasurement.cam_rel_mat" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt id="ivy_memory.geometric.esm.containers.ESMCamMeasurement.img_mean">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">img_mean</span></code><a class="headerlink" href="#ivy_memory.geometric.esm.containers.ESMCamMeasurement.img_mean" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">img_mean</code><a class="headerlink" href="#ivy_memory.geometric.esm.containers.ESMCamMeasurement.img_mean" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt id="ivy_memory.geometric.esm.containers.ESMCamMeasurement.img_var">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">img_var</span></code><a class="headerlink" href="#ivy_memory.geometric.esm.containers.ESMCamMeasurement.img_var" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="ivy_memory.geometric.esm.containers.ESMCamMeasurement.validity_mask">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">validity_mask</span></code><a class="headerlink" href="#ivy_memory.geometric.esm.containers.ESMCamMeasurement.validity_mask" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="ivy_memory.geometric.esm.containers.ESMCamMeasurement.pose_mean">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">pose_mean</span></code><a class="headerlink" href="#ivy_memory.geometric.esm.containers.ESMCamMeasurement.pose_mean" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">img_var</code><a class="headerlink" href="#ivy_memory.geometric.esm.containers.ESMCamMeasurement.img_var" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt id="ivy_memory.geometric.esm.containers.ESMCamMeasurement.pose_cov">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">pose_cov</span></code><a class="headerlink" href="#ivy_memory.geometric.esm.containers.ESMCamMeasurement.pose_cov" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">pose_cov</code><a class="headerlink" href="#ivy_memory.geometric.esm.containers.ESMCamMeasurement.pose_cov" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="ivy_memory.geometric.esm.containers.ESMCamMeasurement.cam_rel_mat">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">cam_rel_mat</span></code><a class="headerlink" href="#ivy_memory.geometric.esm.containers.ESMCamMeasurement.cam_rel_mat" title="Permalink to this definition">¶</a></dt>
+<dt id="ivy_memory.geometric.esm.containers.ESMCamMeasurement.pose_mean">
+<em class="property">property </em><code class="sig-name descname">pose_mean</code><a class="headerlink" href="#ivy_memory.geometric.esm.containers.ESMCamMeasurement.pose_mean" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ivy_memory.geometric.esm.containers.ESMCamMeasurement.validity_mask">
+<em class="property">property </em><code class="sig-name descname">validity_mask</code><a class="headerlink" href="#ivy_memory.geometric.esm.containers.ESMCamMeasurement.validity_mask" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -229,7 +228,7 @@ Inferred from cam_rel_mat if None. <em>[batch_size, timesteps, 6]</em></p></li>
 <div class="line"><strong>Supported Frameworks:</strong></div>
 </div>
 <p><a class="reference internal" href="../../../_images/empty.png"><img alt="empty" src="../../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://jax.readthedocs.io"><img alt="jax_logo" src="../../../_images/jax_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../_images/empty.png"><img alt="empty" src="../../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://www.tensorflow.org"><img alt="tf_logo" src="../../../_images/tensorflow_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../_images/empty.png"><img alt="empty" src="../../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://pytorch.org"><img alt="pytorch_logo" src="../../../_images/pytorch_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../_images/empty.png"><img alt="empty" src="../../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://mxnet.apache.org"><img alt="mxnet_logo" src="../../../_images/mxnet_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../_images/empty.png"><img alt="empty" src="../../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://numpy.org"><img alt="numpy_logo" src="../../../_images/numpy_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../_images/empty.png"><img alt="empty" src="../../../_images/empty.png" style="width: 4%;" /></a></p>
-</section>
+</div>
 
 
            </div>
