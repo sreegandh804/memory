@@ -1,0 +1,930 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ivy_memory.geometric.esm &mdash; Ivy Memory 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Ivy Memory
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Geometric</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../geometric/containers.html">Containers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../geometric/esm.html">Esm</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Learnt</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../learnt/ntm.html">Ntm</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../ivy"">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../mech"">Ivy Mech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../vision"">Ivy Vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../robot"">Ivy Robot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../memory"">Ivy Memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../gym"">Ivy Gym</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Ivy Memory</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>ivy_memory.geometric.esm</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for ivy_memory.geometric.esm</h1><div class="highlight"><pre>
+<span></span><span class="c1"># global</span>
+<span class="kn">import</span> <span class="nn">ivy</span>
+<span class="kn">import</span> <span class="nn">ivy_mech</span>
+<span class="kn">import</span> <span class="nn">ivy_vision</span>
+
+<span class="c1"># local</span>
+<span class="kn">from</span> <span class="nn">ivy_memory.geometric.containers</span> <span class="kn">import</span> <span class="n">ESMObservation</span><span class="p">,</span> <span class="n">ESMMemory</span>
+
+<span class="n">MIN_DENOMINATOR</span> <span class="o">=</span> <span class="mf">1e-12</span>
+
+
+<span class="c1"># noinspection PyUnboundLocalVariable</span>
+<div class="viewcode-block" id="ESM"><a class="viewcode-back" href="../../../geometric/esm/ESM.html#ivy_memory.geometric.esm.ESM">[docs]</a><span class="k">class</span> <span class="nc">ESM</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+
+<div class="viewcode-block" id="ESM.__init__"><a class="viewcode-back" href="../../../geometric/esm/ESM.html#ivy_memory.geometric.esm.ESM.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">depth_prior</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">feat_prior</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">num_feature_channels</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">smooth_kernel_size</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span>
+                 <span class="n">threshold_var_factor</span><span class="o">=</span><span class="mf">0.99</span><span class="p">,</span> <span class="n">depth_limits</span><span class="o">=</span><span class="p">(</span><span class="mf">1e-3</span><span class="p">,</span> <span class="mf">10.</span><span class="p">),</span> <span class="n">depth_var_limits</span><span class="o">=</span><span class="p">(</span><span class="mf">1e-3</span><span class="p">,</span> <span class="mf">1e4</span><span class="p">),</span>
+                 <span class="n">feat_var_limits</span><span class="o">=</span><span class="p">(</span><span class="mf">1e-3</span><span class="p">,</span> <span class="mf">1e4</span><span class="p">),</span> <span class="n">omni_image_dims</span><span class="o">=</span><span class="p">(</span><span class="mi">180</span><span class="p">,</span> <span class="mi">360</span><span class="p">),</span> <span class="n">smooth_mean</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">depth_buffer</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                 <span class="n">stateful</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">):</span>
+        <span class="c1"># ToDo: make variance fully optional. If not specified,</span>
+        <span class="c1">#  then do not compute and scatter during function call for better efficiency.</span>
+
+        <span class="c1"># features</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_feat_dim</span> <span class="o">=</span> <span class="n">num_feature_channels</span>
+
+        <span class="c1"># hole priors</span>
+        <span class="k">if</span> <span class="n">depth_prior</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">depth_prior</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,),</span> <span class="n">dev_str</span><span class="o">=</span><span class="n">device</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1e-2</span>
+        <span class="k">if</span> <span class="n">feat_prior</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">feat_prior</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">num_feature_channels</span><span class="p">,),</span> <span class="n">dev_str</span><span class="o">=</span><span class="n">device</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sphere_depth_prior_val</span> <span class="o">=</span> <span class="n">depth_prior</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sphere_feat_prior_val</span> <span class="o">=</span> <span class="n">feat_prior</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sphere_depth_prior</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sphere_feat_prior</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># value clipping</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_min_depth</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">depth_limits</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dev_str</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_max_depth</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">depth_limits</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">dev_str</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+
+        <span class="c1"># variance clipping</span>
+        <span class="n">ang_pix_var_limits</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1e-3</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">omni_image_dims</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_min_ang_pix_var</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ang_pix_var_limits</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dev_str</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_min_depth_var</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">depth_var_limits</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dev_str</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_min_feat_var</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">feat_var_limits</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dev_str</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ang_pix_prior_var_val</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ang_pix_var_limits</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">dev_str</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_depth_prior_var_val</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">depth_var_limits</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">dev_str</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_feat_prior_var_val</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">feat_var_limits</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">dev_str</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_threshold_var_factor</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">threshold_var_factor</span><span class="p">,</span> <span class="n">dev_str</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ang_pix_var_threshold</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ang_pix_var_limits</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_threshold_var_factor</span><span class="p">,</span> <span class="n">dev_str</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_depth_var_threshold</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">depth_var_limits</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_threshold_var_factor</span><span class="p">,</span> <span class="n">dev_str</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_feat_var_threshold</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">feat_var_limits</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_threshold_var_factor</span><span class="p">,</span> <span class="n">dev_str</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+
+        <span class="c1"># normalization</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_depth_range</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_depth</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_depth</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_min_log_depth_var</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_min_depth_var</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_min_log_feat_var</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_min_feat_var</span><span class="p">)</span>
+
+        <span class="n">max_log_depth_var</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_depth_prior_var_val</span><span class="p">)</span>
+        <span class="n">max_log_feat_var</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_feat_prior_var_val</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log_depth_var_range</span> <span class="o">=</span> <span class="n">max_log_depth_var</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_log_depth_var</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log_feat_var_range</span> <span class="o">=</span> <span class="n">max_log_feat_var</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_log_feat_var</span>
+
+        <span class="c1"># sphere image</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sphere_img_dims</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">omni_image_dims</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pixels_per_degree</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sphere_img_dims</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="mi">180</span>
+
+        <span class="c1"># image smoothing</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_smooth_kernel_size</span> <span class="o">=</span> <span class="n">smooth_kernel_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_smooth_mean</span> <span class="o">=</span> <span class="n">smooth_mean</span>
+
+        <span class="c1"># rendering config</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_with_depth_buffer</span> <span class="o">=</span> <span class="n">depth_buffer</span>
+
+        <span class="c1"># memory</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stateful</span> <span class="o">=</span> <span class="n">stateful</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_memory</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># variables</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span></div>
+
+    <span class="c1"># Helpers #</span>
+    <span class="c1"># --------#</span>
+
+    <span class="k">def</span> <span class="nf">_normalize_mean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mean</span><span class="p">):</span>
+        <span class="n">normed_depth</span> <span class="o">=</span> <span class="p">(</span><span class="n">mean</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_depth</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_depth_range</span> <span class="o">+</span> <span class="n">MIN_DENOMINATOR</span><span class="p">)</span>
+        <span class="n">normed_feat</span> <span class="o">=</span> <span class="n">mean</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">3</span><span class="p">:]</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">normed_depth</span><span class="p">,</span> <span class="n">normed_feat</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_normalize_var</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var</span><span class="p">):</span>
+        <span class="n">normed_depth_var</span> <span class="o">=</span> <span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">var</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">])</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_log_depth_var</span><span class="p">)</span> <span class="o">/</span> \
+                           <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_log_depth_var_range</span> <span class="o">+</span> <span class="n">MIN_DENOMINATOR</span><span class="p">)</span>
+        <span class="n">normed_feat_var</span> <span class="o">=</span> <span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">var</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">4</span><span class="p">:])</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_log_feat_var</span><span class="p">)</span> <span class="o">/</span> \
+                          <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_log_feat_var_range</span> <span class="o">+</span> <span class="n">MIN_DENOMINATOR</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">normed_depth_var</span><span class="p">,</span> <span class="n">normed_feat_var</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_fuse_measurements_with_uncertainty</span><span class="p">(</span><span class="n">measurements</span><span class="p">,</span> <span class="n">measurement_uncertainties</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+        <span class="n">measurements_shape</span> <span class="o">=</span> <span class="n">measurements</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">batch_shape</span> <span class="o">=</span> <span class="n">measurements_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">axis</span><span class="p">]</span>
+        <span class="n">num_batch_dims</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">batch_shape</span><span class="p">)</span>
+        <span class="n">num_measurements</span> <span class="o">=</span> <span class="n">measurements_shape</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span>
+
+        <span class="c1"># BS x 1 x RS</span>
+        <span class="n">sum_of_variances</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span><span class="n">measurement_uncertainties</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">prod_of_variances</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reduce_prod</span><span class="p">(</span><span class="n">measurement_uncertainties</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># BS x 1 x RS</span>
+        <span class="n">new_variance</span> <span class="o">=</span> <span class="n">prod_of_variances</span> <span class="o">/</span> <span class="n">sum_of_variances</span>
+
+        <span class="c1"># dim size list of BS x (dim-1) x RS</span>
+        <span class="n">batch_slices</span> <span class="o">=</span> <span class="p">[</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)]</span> <span class="o">*</span> <span class="n">num_batch_dims</span>
+        <span class="n">concat_lists</span> <span class="o">=</span> \
+            <span class="p">[[</span><span class="n">measurement_uncertainties</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">batch_slices</span> <span class="o">+</span> <span class="p">[</span><span class="nb">slice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="kc">None</span><span class="p">)])]]</span>
+             <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="mi">0</span> <span class="k">else</span> <span class="p">[]</span> <span class="o">+</span> <span class="p">[</span><span class="n">measurement_uncertainties</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">batch_slices</span> <span class="o">+</span> <span class="p">[</span><span class="nb">slice</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)])]]</span>
+             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_measurements</span><span class="p">)]</span>
+        <span class="n">partial_variances_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">concat_list</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span> <span class="k">for</span> <span class="n">concat_list</span> <span class="ow">in</span> <span class="n">concat_lists</span><span class="p">]</span>
+
+        <span class="c1"># dim size list of BS x 1 x RS</span>
+        <span class="n">partial_prod_of_variances_list</span> <span class="o">=</span> \
+            <span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">reduce_prod</span><span class="p">(</span><span class="n">partial_variance</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">partial_variance</span> <span class="ow">in</span>
+             <span class="n">partial_variances_list</span><span class="p">]</span>
+
+        <span class="c1"># BS x dim x RS</span>
+        <span class="n">partial_prod_of_variances</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">partial_prod_of_variances_list</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
+
+        <span class="c1"># BS x 1 x RS</span>
+        <span class="n">new_mean</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">((</span><span class="n">partial_prod_of_variances</span> <span class="o">*</span> <span class="n">measurements</span><span class="p">)</span> <span class="o">/</span> <span class="n">sum_of_variances</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># BS x 1 x RS, BS x 1 x RS</span>
+        <span class="k">return</span> <span class="n">new_mean</span><span class="p">,</span> <span class="n">new_variance</span>
+
+    <span class="c1"># Projection Functions #</span>
+    <span class="c1"># ---------------------#</span>
+
+    <span class="k">def</span> <span class="nf">_frame_to_omni_frame_projection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cam_rel_poses</span><span class="p">,</span> <span class="n">cam_rel_mats</span><span class="p">,</span> <span class="n">uniform_sphere_pixel_coords</span><span class="p">,</span> <span class="n">cam_coords_f1</span><span class="p">,</span>
+                                        <span class="n">cam_feat_f1</span><span class="p">,</span> <span class="n">rel_pose_covs</span><span class="p">,</span> <span class="n">image_var_f1</span><span class="p">,</span> <span class="n">holes_prior</span><span class="p">,</span> <span class="n">holes_prior_var</span><span class="p">,</span>
+                                        <span class="n">batch_size</span><span class="p">,</span> <span class="n">num_timesteps</span><span class="p">,</span> <span class="n">num_cams</span><span class="p">,</span> <span class="n">image_dims</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Project mean and variance values from frame 1 to omni frame 2, using scatter and quantize operations.</span>
+<span class="sd">        :param cam_rel_poses: Relative pose of camera to agent *[batch_size, n, c, 6]*</span>
+<span class="sd">        :param cam_rel_mats: Relative transformation matrix from camera to agent *[batch_size, n, c, 3, 4]*</span>
+<span class="sd">        :param uniform_sphere_pixel_coords: Pixel coords *[batch_size, n, h, w, 3]*</span>
+<span class="sd">        :param cam_coords_f1: Camera co-ordinates to project *[batch_size, n, c, h_in, w_in, 3]*</span>
+<span class="sd">        :param cam_feat_f1: Mean feature values to project *[batch_size, n, c, h_in, w_in, f]*</span>
+<span class="sd">        :param rel_pose_covs: Pose covariances *[batch_size, n, c, 6, 6]*</span>
+<span class="sd">        :param image_var_f1: Angular pixel, radius and feature variance values to project *[batch_size, n, c, h_in, w_in, 3+f]*</span>
+<span class="sd">        :param holes_prior: Prior values for holes which arise during the projection *[batch_size, n, h, w, 3+f]*</span>
+<span class="sd">        :param holes_prior_var: Prior variance for holes which arise during the projection *[batch_size, n, h, w, 3+f]*</span>
+<span class="sd">        :param batch_size: Size of batch</span>
+<span class="sd">        :param num_timesteps: Number of timesteps</span>
+<span class="sd">        :param num_cams: Number of cameras</span>
+<span class="sd">        :param image_dims: Image dimensions</span>
+<span class="sd">        :return: Projected mean *[batch_size, 1, h, w, 3+f]* and variance *[batch_size, 1, h, w, 3+f]*</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># cam 1 to cam 2 coords</span>
+
+        <span class="n">cam_coords_f2</span> <span class="o">=</span> <span class="n">ivy_vision</span><span class="o">.</span><span class="n">cam_to_cam_coords</span><span class="p">(</span>
+            <span class="n">ivy_mech</span><span class="o">.</span><span class="n">make_coordinates_homogeneous</span><span class="p">(</span>
+                <span class="n">cam_coords_f1</span><span class="p">,</span> <span class="p">[</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_timesteps</span><span class="p">,</span> <span class="n">num_cams</span><span class="p">]</span> <span class="o">+</span> <span class="n">image_dims</span><span class="p">),</span> <span class="n">cam_rel_mats</span><span class="p">,</span>
+            <span class="p">[</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_timesteps</span><span class="p">,</span> <span class="n">num_cams</span><span class="p">],</span> <span class="n">image_dims</span><span class="p">)</span>
+
+        <span class="c1"># cam 2 to sphere 2 coords</span>
+
+        <span class="n">sphere_coords_f2</span> <span class="o">=</span> <span class="n">ivy_vision</span><span class="o">.</span><span class="n">cam_to_sphere_coords</span><span class="p">(</span><span class="n">cam_coords_f2</span><span class="p">)</span>
+        <span class="n">image_var_f2</span> <span class="o">=</span> <span class="n">image_var_f1</span>
+
+        <span class="c1"># angular pixel coords</span>
+
+        <span class="c1"># B x N x C x H x W x 3</span>
+        <span class="n">angular_pixel_coords_f2</span> <span class="o">=</span> \
+            <span class="n">ivy_vision</span><span class="o">.</span><span class="n">sphere_to_angular_pixel_coords</span><span class="p">(</span><span class="n">sphere_coords_f2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pixels_per_degree</span><span class="p">)</span>
+
+        <span class="c1"># constant feature projection</span>
+
+        <span class="c1"># B x N x C x H x W x (3+F)</span>
+        <span class="n">projected_coords_f2</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">angular_pixel_coords_f2</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">cam_feat_f1</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># reshaping to fit quantization dimension requirements</span>
+
+        <span class="c1"># B x N x (CxHxW) x (3+F)</span>
+        <span class="n">projected_coords_f2_flat</span> <span class="o">=</span> \
+            <span class="n">ivy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">projected_coords_f2</span><span class="p">,</span>
+                        <span class="p">[</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_timesteps</span><span class="p">,</span> <span class="n">num_cams</span> <span class="o">*</span> <span class="n">image_dims</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">image_dims</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="c1"># B x N x (CxHxW) x (3+F)</span>
+        <span class="n">image_var_f2_flat</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">image_var_f2</span><span class="p">,</span>
+                                        <span class="p">[</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_timesteps</span><span class="p">,</span> <span class="n">num_cams</span> <span class="o">*</span> <span class="n">image_dims</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">image_dims</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="c1"># quantized result from all scene cameras</span>
+
+        <span class="c1"># B x N x OH x OW x (3+F)   # B x N x OH x OW x (3+F)</span>
+        <span class="k">return</span> <span class="n">ivy_vision</span><span class="o">.</span><span class="n">quantize_to_image</span><span class="p">(</span>
+            <span class="n">pixel_coords</span><span class="o">=</span><span class="n">projected_coords_f2_flat</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">],</span>
+            <span class="n">final_image_dims</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_sphere_img_dims</span><span class="p">,</span>
+            <span class="n">feat</span><span class="o">=</span><span class="n">projected_coords_f2_flat</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">2</span><span class="p">:],</span>
+            <span class="n">feat_prior</span><span class="o">=</span><span class="n">holes_prior</span><span class="p">,</span>
+            <span class="n">with_db</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_with_depth_buffer</span><span class="p">,</span>
+            <span class="n">pixel_coords_var</span><span class="o">=</span><span class="n">image_var_f2_flat</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">],</span>
+            <span class="n">feat_var</span><span class="o">=</span><span class="n">image_var_f2_flat</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">2</span><span class="p">:],</span>
+            <span class="n">pixel_coords_prior_var</span><span class="o">=</span><span class="n">holes_prior_var</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">],</span>
+            <span class="n">feat_prior_var</span><span class="o">=</span><span class="n">holes_prior_var</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">2</span><span class="p">:],</span>
+            <span class="n">var_threshold</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_var_threshold</span><span class="p">,</span>
+            <span class="n">uniform_pixel_coords</span><span class="o">=</span><span class="n">uniform_sphere_pixel_coords</span><span class="p">,</span>
+            <span class="n">batch_shape</span><span class="o">=</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_timesteps</span><span class="p">),</span>
+            <span class="n">dev_str</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev_str</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_omni_frame_to_omni_frame_projection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">agent_rel_pose</span><span class="p">,</span> <span class="n">agent_rel_mat</span><span class="p">,</span> <span class="n">uniform_sphere_pixel_coords</span><span class="p">,</span>
+                                             <span class="n">sphere_pix_coords_f1</span><span class="p">,</span> <span class="n">sphere_depth_f1</span><span class="p">,</span> <span class="n">sphere_feat_f1</span><span class="p">,</span> <span class="n">agent_rel_pose_cov</span><span class="p">,</span>
+                                             <span class="n">image_var_f1</span><span class="p">,</span> <span class="n">holes_prior</span><span class="p">,</span> <span class="n">holes_prior_var</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Project mean and variance values from omni frame 1 to omni frame 2, using scatter and quantize operation.</span>
+
+<span class="sd">        :param agent_rel_pose: Relative pose of agent to the previous step *[batch_size, 6]*</span>
+<span class="sd">        :param agent_rel_mat: Relative transformation matrix of agent to the previous step</span>
+<span class="sd">                                    *[batch_size, 3, 4]*</span>
+<span class="sd">        :param uniform_sphere_pixel_coords: Pixel coords *[batch_size, h, w, 3]*</span>
+<span class="sd">        :param sphere_pix_coords_f1: Pixel co-ordinates to project *[batch_size, h, w, 2]*</span>
+<span class="sd">        :param sphere_depth_f1: Mean radius values to project *[batch_size, h, w, 1]*</span>
+<span class="sd">        :param sphere_feat_f1: Mean feature values to project *[batch_size, h, w, f]*</span>
+<span class="sd">        :param agent_rel_pose_cov: Agent relative pose covariance *[batch_size, 6, 6]*</span>
+<span class="sd">        :param image_var_f1: Angular pixels, radius and feature variance values to project *[batch_size, h, w, 3+f]*</span>
+<span class="sd">        :param holes_prior: Prior values for holes which arise during the projection *[batch_size, h, w, 1+f]*</span>
+<span class="sd">        :param holes_prior_var: Prior variance for holes which arise during the projection</span>
+<span class="sd">                                *[batch_size, h, w, 3+f]*</span>
+<span class="sd">        :param batch_size: Size of batch</span>
+<span class="sd">        :return: Projected mean *[batch_size, h, w, 3+f]* and variance *[batch_size, h, w, 3+f]*</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Frame 1 #</span>
+        <span class="c1"># --------#</span>
+
+        <span class="c1"># combined</span>
+
+        <span class="c1"># B x OH x OW x 3</span>
+        <span class="n">angular_pixel_coords_f1</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">sphere_pix_coords_f1</span><span class="p">,</span> <span class="n">sphere_depth_f1</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># sphere coords</span>
+
+        <span class="c1"># B x OH x OW x 3</span>
+        <span class="n">sphere_coords_f1</span> <span class="o">=</span> \
+            <span class="n">ivy_vision</span><span class="o">.</span><span class="n">angular_pixel_to_sphere_coords</span><span class="p">(</span><span class="n">angular_pixel_coords_f1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pixels_per_degree</span><span class="p">)</span>
+
+        <span class="c1"># Frame 2 #</span>
+        <span class="c1"># --------#</span>
+
+        <span class="c1"># sphere to sphere pixel projection</span>
+
+        <span class="n">sphere_coords_f2</span> <span class="o">=</span> <span class="n">ivy_vision</span><span class="o">.</span><span class="n">sphere_to_sphere_coords</span><span class="p">(</span>
+            <span class="n">sphere_coords_f1</span><span class="p">,</span> <span class="n">agent_rel_mat</span><span class="p">,</span> <span class="p">[</span><span class="n">batch_size</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sphere_img_dims</span><span class="p">)</span>
+        <span class="n">image_var_f2</span> <span class="o">=</span> <span class="n">image_var_f1</span>
+
+        <span class="c1"># to angular pixel coords</span>
+
+        <span class="c1"># B x OH x OW x 3</span>
+        <span class="n">angular_pixel_coords_f2</span> <span class="o">=</span> \
+            <span class="n">ivy_vision</span><span class="o">.</span><span class="n">sphere_to_angular_pixel_coords</span><span class="p">(</span><span class="n">sphere_coords_f2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pixels_per_degree</span><span class="p">)</span>
+
+        <span class="c1"># constant feature projection</span>
+
+        <span class="c1"># B x OH x OW x (3+F)</span>
+        <span class="n">projected_coords_f2</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">angular_pixel_coords_f2</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">sphere_feat_f1</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># reshaping to fit quantization dimension requirements</span>
+
+        <span class="c1"># B x (OHxOW) x (3+F)</span>
+        <span class="n">projected_coords_f2_flat</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">projected_coords_f2</span><span class="p">,</span>
+                                               <span class="p">[</span><span class="n">batch_size</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_sphere_img_dims</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sphere_img_dims</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+                                               <span class="o">+</span> <span class="p">[</span><span class="mi">3</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_feat_dim</span><span class="p">])</span>
+
+        <span class="c1"># B x (OHxOW) x (3+F)</span>
+        <span class="n">image_var_f2_flat</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">image_var_f2</span><span class="p">,</span>
+                                        <span class="p">[</span><span class="n">batch_size</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_sphere_img_dims</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sphere_img_dims</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+                                        <span class="o">+</span> <span class="p">[</span><span class="mi">3</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_feat_dim</span><span class="p">])</span>
+
+        <span class="c1"># quantize the projection</span>
+
+        <span class="c1"># B x N x OH x OW x (3+F)   # B x N x OH x OW x (3+F)</span>
+        <span class="k">return</span> <span class="n">ivy_vision</span><span class="o">.</span><span class="n">quantize_to_image</span><span class="p">(</span>
+            <span class="n">pixel_coords</span><span class="o">=</span><span class="n">projected_coords_f2_flat</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">],</span>
+            <span class="n">final_image_dims</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_sphere_img_dims</span><span class="p">,</span>
+            <span class="n">feat</span><span class="o">=</span><span class="n">projected_coords_f2_flat</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">2</span><span class="p">:],</span>
+            <span class="n">feat_prior</span><span class="o">=</span><span class="n">holes_prior</span><span class="p">,</span>
+            <span class="n">with_db</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_with_depth_buffer</span><span class="p">,</span>
+            <span class="n">pixel_coords_var</span><span class="o">=</span><span class="n">image_var_f2_flat</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">],</span>
+            <span class="n">feat_var</span><span class="o">=</span><span class="n">image_var_f2_flat</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">2</span><span class="p">:],</span>
+            <span class="n">pixel_coords_prior_var</span><span class="o">=</span><span class="n">holes_prior_var</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">],</span>
+            <span class="n">feat_prior_var</span><span class="o">=</span><span class="n">holes_prior_var</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">2</span><span class="p">:],</span>
+            <span class="n">var_threshold</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_var_threshold</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="n">uniform_pixel_coords</span><span class="o">=</span><span class="n">uniform_sphere_pixel_coords</span><span class="p">,</span>
+            <span class="n">batch_shape</span><span class="o">=</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,),</span>
+            <span class="n">dev_str</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev_str</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
+
+    <span class="c1"># Measurement #</span>
+    <span class="c1"># ------------#</span>
+
+    <span class="k">def</span> <span class="nf">_convert_images_to_omni_observations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">measurements</span><span class="p">,</span> <span class="n">uniform_sphere_pixel_coords</span><span class="p">,</span>
+                                             <span class="n">holes_prior</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">num_timesteps</span><span class="p">,</span> <span class="n">num_cams</span><span class="p">,</span> <span class="n">image_dims</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert image to omni-directional measurements</span>
+
+<span class="sd">        :param measurements: perspective captured images and relative poses container</span>
+<span class="sd">        :param uniform_sphere_pixel_coords: Uniform  sphere pixel coords *[batch_size, num_timesteps, oh, ow, 3]*</span>
+<span class="sd">        :param holes_prior: Prior for quantization holes *[batch_size, num_timesteps, oh, ow, 1+f]*</span>
+<span class="sd">        :param batch_size: Size of batch</span>
+<span class="sd">        :param num_timesteps: Number of frames</span>
+<span class="sd">        :param num_cams: Number of cameras</span>
+<span class="sd">        :param image_dims: Image dimensions</span>
+<span class="sd">        :return: *[batch_size, n, oh, ow, 3+f]*    *[batch_size, n, oh, ow, 3+f]*</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># coords from all scene cameras wrt world</span>
+
+        <span class="n">images_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="n">images_var_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="n">cam_rel_poses_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="n">cam_rel_poses_cov_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="n">cam_rel_mats_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="n">validity_mask_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">measurements</span><span class="o">.</span><span class="n">to_iterator</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;img_mean&#39;</span><span class="p">:</span>
+                <span class="c1"># B x N x 1 x H x W x (3+f)</span>
+                <span class="n">images_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;img_var&#39;</span><span class="p">:</span>
+                <span class="c1"># B x N x 1 x H x W x (3+f)</span>
+                <span class="n">images_var_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;pose_mean&#39;</span><span class="p">:</span>
+                <span class="c1"># B x N x 1 x 6</span>
+                <span class="n">cam_rel_poses_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;pose_cov&#39;</span><span class="p">:</span>
+                <span class="c1"># B x N x 1 x 6 x 6</span>
+                <span class="n">cam_rel_poses_cov_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;cam_rel_mat&#39;</span><span class="p">:</span>
+                <span class="c1"># B x N x 1 x 3 x 4</span>
+                <span class="n">cam_rel_mats_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;validity_mask&#39;</span><span class="p">:</span>
+                <span class="n">validity_mask_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Invalid image key: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
+
+        <span class="c1"># B x N x C x H x W x (3+f)</span>
+        <span class="n">images</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">images_list</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="c1"># B x N x C x H x W x (3+f)</span>
+        <span class="n">var_to_project</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">images_var_list</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="c1"># B x N x C x 6</span>
+        <span class="n">cam_to_cam_poses</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">cam_rel_poses_list</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="c1"># B x N x C x 3 x 4</span>
+        <span class="n">cam_to_cam_mats</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">cam_rel_mats_list</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="c1"># B x N x C x 6 x 6</span>
+        <span class="n">cam_to_cam_pose_covs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">cam_rel_poses_cov_list</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="c1"># B x N x C x 1</span>
+        <span class="n">validity_masks</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">validity_mask_list</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+
+        <span class="c1"># B x N x OH x OW x (3+f)</span>
+        <span class="n">holes_prior_var</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_timesteps</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sphere_img_dims</span> <span class="o">+</span> <span class="p">[</span><span class="mi">3</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_feat_dim</span><span class="p">],</span>
+                                   <span class="n">dev_str</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev_str</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1e12</span>
+
+        <span class="c1"># reset invalid regions to prior</span>
+
+        <span class="c1"># B x N x C x H x W x (3+f)</span>
+        <span class="n">images</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">validity_masks</span><span class="p">,</span> <span class="n">images</span><span class="p">,</span>
+                           <span class="n">ivy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">images</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">],</span> <span class="n">ivy</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">images</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">2</span><span class="p">:],</span> <span class="n">dev_str</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev_str</span><span class="p">)),</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+
+        <span class="c1"># B x N x C x H x W x (3+f)</span>
+        <span class="n">var_to_project</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">validity_masks</span><span class="p">,</span> <span class="n">var_to_project</span><span class="p">,</span>
+                                   <span class="n">ivy</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">var_to_project</span><span class="p">,</span> <span class="n">dev_str</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev_str</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1e12</span><span class="p">)</span>
+
+        <span class="c1"># B x N x OH x OW x (3+f)    # B x N x OH x OW x (3+f)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame_to_omni_frame_projection</span><span class="p">(</span>
+            <span class="n">cam_to_cam_poses</span><span class="p">,</span> <span class="n">cam_to_cam_mats</span><span class="p">,</span> <span class="n">uniform_sphere_pixel_coords</span><span class="p">,</span> <span class="n">images</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">],</span> <span class="n">images</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">3</span><span class="p">:],</span>
+            <span class="n">cam_to_cam_pose_covs</span><span class="p">,</span> <span class="n">var_to_project</span><span class="p">,</span> <span class="n">holes_prior</span><span class="p">,</span> <span class="n">holes_prior_var</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">num_timesteps</span><span class="p">,</span> <span class="n">num_cams</span><span class="p">,</span>
+            <span class="n">image_dims</span><span class="p">)</span>
+
+    <span class="c1"># Kalman Filter #</span>
+    <span class="c1"># --------------#</span>
+
+    <span class="k">def</span> <span class="nf">_kalman_filter_on_measurement_sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prev_fused_val</span><span class="p">,</span> <span class="n">prev_fused_variance</span><span class="p">,</span> <span class="n">hole_prior</span><span class="p">,</span>
+                                               <span class="n">hole_prior_var</span><span class="p">,</span> <span class="n">meas</span><span class="p">,</span> <span class="n">meas_vars</span><span class="p">,</span> <span class="n">uniform_sphere_pixel_coords</span><span class="p">,</span>
+                                               <span class="n">agent_rel_poses</span><span class="p">,</span> <span class="n">agent_rel_pose_covs</span><span class="p">,</span> <span class="n">agent_rel_mats</span><span class="p">,</span>
+                                               <span class="n">batch_size</span><span class="p">,</span> <span class="n">num_timesteps</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Perform kalman filter on measurement sequence</span>
+
+<span class="sd">        :param prev_fused_val: Fused value from previous timestamp *[batch_size, oh, ow, (3+f)]*</span>
+<span class="sd">        :param prev_fused_variance: Fused variance from previous timestamp *[batch_size, oh, ow, (3+f)]*</span>
+<span class="sd">        :param hole_prior: Prior for holes in quantization *[batch_size, oh, ow, (1+f)]*</span>
+<span class="sd">        :param hole_prior_var: Prior variance for holes in quantization *[batch_size, oh, ow, (3+f)]*</span>
+<span class="sd">        :param meas: Measurements *[batch_size, num_timesteps, oh, ow, (3+f)]*</span>
+<span class="sd">        :param meas_vars: Measurement variances *[batch_size, num_timesteps, oh, ow, (3+f)]*</span>
+<span class="sd">        :param uniform_sphere_pixel_coords: Uniform sphere pixel co-ordinates *[batch_size, oh, ow, 3]*</span>
+<span class="sd">        :param agent_rel_poses: Relative poses of agents to the previous step *[batch_size, num_timesteps, 6]*</span>
+<span class="sd">        :param agent_rel_pose_covs: Agent relative pose covariances *[batch_size, num_timesteps, 6, 6]*</span>
+<span class="sd">        :param agent_rel_mats: Relative transformations matrix of agents to the previous step</span>
+<span class="sd">                                *[batch_size, num_timesteps, 3, 4]*</span>
+<span class="sd">        :param batch_size: Size of batch</span>
+<span class="sd">        :param num_timesteps: Number of frames</span>
+<span class="sd">        :return: list of *[batch_size, oh, ow, (3+f)]*,    list of *[batch_size, oh, ow, (3+f)]*</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">fused_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="n">fused_variances_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_timesteps</span><span class="p">):</span>
+            <span class="c1"># project prior from previous frame #</span>
+            <span class="c1"># ----------------------------------#</span>
+
+            <span class="c1"># B x OH x OW x (3+F)</span>
+            <span class="n">prev_prior</span> <span class="o">=</span> <span class="n">prev_fused_val</span>
+            <span class="n">prev_prior_variance</span> <span class="o">=</span> <span class="n">prev_fused_variance</span>
+
+            <span class="c1"># B x 3 x 4</span>
+            <span class="n">agent_rel_mat</span> <span class="o">=</span> <span class="n">agent_rel_mats</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span>
+
+            <span class="c1"># B x 6</span>
+            <span class="n">agent_rel_pose</span> <span class="o">=</span> <span class="n">agent_rel_poses</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span>
+
+            <span class="c1"># B x 6 x 6</span>
+            <span class="n">agent_rel_pose_cov</span> <span class="o">=</span> <span class="n">agent_rel_pose_covs</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span>
+
+            <span class="c1"># B x OH x OW x (3+F)   B x OH x OW x (3+F)</span>
+            <span class="n">fused_projected</span><span class="p">,</span> <span class="n">fused_projected_variance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_omni_frame_to_omni_frame_projection</span><span class="p">(</span>
+                <span class="n">agent_rel_pose</span><span class="p">,</span> <span class="n">agent_rel_mat</span><span class="p">,</span> <span class="n">uniform_sphere_pixel_coords</span><span class="p">,</span> <span class="n">prev_prior</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">],</span> <span class="n">prev_prior</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span><span class="mi">3</span><span class="p">],</span>
+                <span class="n">prev_prior</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">3</span><span class="p">:],</span> <span class="n">agent_rel_pose_cov</span><span class="p">,</span> <span class="n">prev_prior_variance</span><span class="p">,</span> <span class="n">hole_prior</span><span class="p">,</span> <span class="n">hole_prior_var</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">)</span>
+
+            <span class="c1"># reset prior</span>
+
+            <span class="c1"># B x OH x OW x (3+F)</span>
+            <span class="n">prior</span> <span class="o">=</span> <span class="n">fused_projected</span>
+            <span class="n">prior_var</span> <span class="o">=</span> <span class="n">fused_projected_variance</span>
+
+            <span class="c1"># per-pixel fusion with measurements #</span>
+            <span class="c1"># -----------------------------------#</span>
+
+            <span class="c1"># extract slice for frame</span>
+
+            <span class="c1"># B x OH x OW x (3+F)</span>
+            <span class="n">measurement</span> <span class="o">=</span> <span class="n">meas</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span>
+            <span class="n">measurement_variance</span> <span class="o">=</span> <span class="n">meas_vars</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span>
+
+            <span class="c1"># fuse prior and measurement</span>
+
+            <span class="c1"># B x 2 x OH x OW x (3+F)</span>
+            <span class="n">prior_and_meas</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">ivy</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+                                              <span class="n">ivy</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">measurement</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">prior_and_meas_variance</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">ivy</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">prior_var</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+                                                       <span class="n">ivy</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">measurement_variance</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="mi">1</span><span class="p">)</span>
+
+            <span class="c1"># B x OH x OW x (3+F)</span>
+            <span class="n">low_var_mask</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span>
+                <span class="n">prior_and_meas_variance</span> <span class="o">&lt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">hole_prior_var</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_threshold_var_factor</span><span class="p">,</span>
+                <span class="s1">&#39;int32&#39;</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+
+            <span class="c1"># B x 1 x OH x OW x (3+F)    B x 1 x OH x OW x (3+F)</span>
+            <span class="c1"># ToDo: handle this properly once re-implemented with a single scatter operation only</span>
+            <span class="c1">#  currently depth values are fused even if these are clearly far apart</span>
+            <span class="n">fused_val_unsmoothed</span><span class="p">,</span> <span class="n">fused_variance_unsmoothed</span> <span class="o">=</span> \
+                <span class="bp">self</span><span class="o">.</span><span class="n">_fuse_measurements_with_uncertainty</span><span class="p">(</span><span class="n">prior_and_meas</span><span class="p">,</span> <span class="n">prior_and_meas_variance</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+            <span class="c1"># B x OH x OW x (3+F)</span>
+            <span class="c1"># This prevents accumulating certainty from duplicate re-projections from prior measurements</span>
+            <span class="n">fused_variance_unsmoothed</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">low_var_mask</span><span class="p">,</span> <span class="n">fused_variance_unsmoothed</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">hole_prior_var</span><span class="p">)</span>
+
+            <span class="c1"># B x OH x OW x (3+F)</span>
+            <span class="n">fused_val</span> <span class="o">=</span> <span class="n">fused_val_unsmoothed</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="n">fused_variance</span> <span class="o">=</span> <span class="n">fused_variance_unsmoothed</span>
+            <span class="n">low_var_mask</span> <span class="o">=</span> <span class="n">fused_variance</span> <span class="o">&lt;</span> <span class="n">hole_prior_var</span>
+
+            <span class="c1"># B x OH x OW x (3+F)    B x OH x OW x (3+F)</span>
+            <span class="n">fused_val</span><span class="p">,</span> <span class="n">fused_variance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">smooth</span><span class="p">(</span>
+                <span class="n">fused_val</span><span class="p">,</span> <span class="n">fused_variance</span><span class="p">,</span> <span class="n">low_var_mask</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_smooth_mean</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_smooth_kernel_size</span><span class="p">,</span>
+                <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">)</span>
+
+            <span class="c1"># append to list for returning</span>
+
+            <span class="c1"># B x OH x OW x (3+F)</span>
+            <span class="n">fused_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fused_val</span><span class="p">)</span>
+
+            <span class="c1"># B x OH x OW x (3+F)</span>
+            <span class="n">fused_variances_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fused_variance</span><span class="p">)</span>
+
+            <span class="c1"># update for next time step</span>
+            <span class="n">prev_fused_val</span> <span class="o">=</span> <span class="n">fused_val</span>
+            <span class="n">prev_fused_variance</span> <span class="o">=</span> <span class="n">fused_variance</span>
+
+        <span class="c1"># list of *[batch_size, oh, ow, (3+f)]*,    list of *[batch_size, oh, ow, (3+f)]*</span>
+        <span class="k">return</span> <span class="n">fused_list</span><span class="p">,</span> <span class="n">fused_variances_list</span>
+
+    <span class="c1"># Public Functions #</span>
+    <span class="c1"># -----------------#</span>
+
+<div class="viewcode-block" id="ESM.empty_memory"><a class="viewcode-back" href="../../../geometric/esm/ESM.html#ivy_memory.geometric.esm.ESM.empty_memory">[docs]</a>    <span class="k">def</span> <span class="nf">empty_memory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">timesteps</span><span class="p">):</span>
+        <span class="n">uniform_pixel_coords</span> <span class="o">=</span> \
+            <span class="n">ivy_vision</span><span class="o">.</span><span class="n">create_uniform_pixel_coords_image</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sphere_img_dims</span><span class="p">,</span> <span class="p">[</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">timesteps</span><span class="p">],</span>
+                                                         <span class="n">dev_str</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev_str</span><span class="p">)[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">empty_memory</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;mean&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">uniform_pixel_coords</span><span class="p">]</span> <span class="o">+</span>
+                <span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">timesteps</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sphere_img_dims</span> <span class="o">+</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">dev_str</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev_str</span><span class="p">)</span>
+                 <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sphere_depth_prior_val</span><span class="p">]</span> <span class="o">+</span>
+                <span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">timesteps</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sphere_img_dims</span> <span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_feat_dim</span><span class="p">],</span> <span class="n">dev_str</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev_str</span><span class="p">)</span>
+                 <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sphere_feat_prior_val</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span>
+            <span class="s1">&#39;var&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">timesteps</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sphere_img_dims</span> <span class="o">+</span> <span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">dev_str</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev_str</span><span class="p">)</span>
+                 <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ang_pix_prior_var_val</span><span class="p">]</span> <span class="o">+</span>
+                <span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">timesteps</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sphere_img_dims</span> <span class="o">+</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">dev_str</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev_str</span><span class="p">)</span>
+                 <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_depth_prior_var_val</span><span class="p">]</span> <span class="o">+</span>
+                <span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">timesteps</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sphere_img_dims</span> <span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_feat_dim</span><span class="p">],</span> <span class="n">dev_str</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev_str</span><span class="p">)</span>
+                 <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_feat_prior_var_val</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">ESMMemory</span><span class="p">(</span><span class="o">**</span><span class="n">empty_memory</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ESM.smooth"><a class="viewcode-back" href="../../../geometric/esm/ESM.html#ivy_memory.geometric.esm.ESM.smooth">[docs]</a>    <span class="k">def</span> <span class="nf">smooth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fused_val</span><span class="p">,</span> <span class="n">fused_variance</span><span class="p">,</span> <span class="n">low_var_mask</span><span class="p">,</span> <span class="n">smooth_mean</span><span class="p">,</span>
+               <span class="n">smooth_kernel_size</span><span class="p">,</span> <span class="n">variance_mode</span><span class="p">,</span> <span class="n">fix_low_var_pixels</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">):</span>
+        <span class="n">variance_mode</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">var_for_smoothing</span> <span class="o">=</span> <span class="n">fused_variance</span>
+
+        <span class="c1"># image smoothing</span>
+        <span class="k">if</span> <span class="n">smooth_mean</span><span class="p">:</span>
+
+            <span class="c1"># pad borders</span>
+            <span class="n">pad_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">smooth_kernel_size</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">fused_val_pad</span> <span class="o">=</span> <span class="n">ivy_vision</span><span class="o">.</span><span class="n">pad_omni_image</span><span class="p">(</span><span class="n">fused_val</span><span class="p">,</span> <span class="n">pad_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sphere_img_dims</span><span class="p">)</span>
+            <span class="n">fused_variance_pad</span> <span class="o">=</span> <span class="n">ivy_vision</span><span class="o">.</span><span class="n">pad_omni_image</span><span class="p">(</span><span class="n">var_for_smoothing</span><span class="p">,</span> <span class="n">pad_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sphere_img_dims</span><span class="p">)</span>
+            <span class="n">expanded_sphere_img_dims</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">pad_size</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sphere_img_dims</span><span class="p">]</span>
+
+            <span class="c1"># reshape for dilation and erosion</span>
+            <span class="n">fused_val_pad_flat</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">fused_val_pad</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">2</span><span class="p">:],</span> <span class="p">[</span><span class="n">batch_size</span><span class="p">]</span> <span class="o">+</span> <span class="n">expanded_sphere_img_dims</span> <span class="o">+</span>
+                                             <span class="p">[</span><span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_feat_dim</span><span class="p">])</span>
+            <span class="n">fused_var_pad_flat</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">fused_variance_pad</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">2</span><span class="p">:],</span> <span class="p">[</span><span class="n">batch_size</span><span class="p">]</span> <span class="o">+</span> <span class="n">expanded_sphere_img_dims</span> <span class="o">+</span>
+                                             <span class="p">[</span><span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_feat_dim</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="n">variance_mode</span><span class="p">:</span>
+                <span class="n">smoothed_fused_val_flat</span><span class="p">,</span> <span class="n">smoothed_fused_var_flat</span> <span class="o">=</span> \
+                    <span class="n">ivy_vision</span><span class="o">.</span><span class="n">smooth_image_fom_var_image</span><span class="p">(</span><span class="n">fused_val_pad_flat</span><span class="p">,</span> <span class="n">fused_var_pad_flat</span><span class="p">,</span> <span class="n">smooth_kernel_size</span><span class="p">,</span>
+                                                          <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_feat_dim</span><span class="p">),</span> <span class="n">dev_str</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev_str</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">smoothed_fused_val_flat</span><span class="p">,</span> <span class="n">smoothed_fused_var_flat</span> <span class="o">=</span> \
+                    <span class="n">ivy_vision</span><span class="o">.</span><span class="n">weighted_image_smooth</span><span class="p">(</span><span class="n">fused_val_pad_flat</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">fused_var_pad_flat</span><span class="p">,</span> <span class="n">smooth_kernel_size</span><span class="p">)</span>
+
+            <span class="c1"># reshape to image dims</span>
+            <span class="n">smoothed_fused_val</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">smoothed_fused_val_flat</span><span class="p">,</span> <span class="p">[</span><span class="n">batch_size</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sphere_img_dims</span> <span class="o">+</span>
+                                             <span class="p">[</span><span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_feat_dim</span><span class="p">])</span>
+            <span class="n">smoothed_fused_val</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">fused_val</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">],</span> <span class="n">smoothed_fused_val</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="c1"># replace temporary zeros with their prior values</span>
+            <span class="c1"># This ensures that the smoothing operation only changes the values for regions of high variance</span>
+            <span class="k">if</span> <span class="n">fix_low_var_pixels</span><span class="p">:</span>
+                <span class="n">fused_val</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">low_var_mask</span><span class="p">,</span> <span class="n">fused_val</span><span class="p">,</span> <span class="n">smoothed_fused_val</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">fused_val</span> <span class="o">=</span> <span class="n">smoothed_fused_val</span>
+
+        <span class="k">return</span> <span class="n">fused_val</span><span class="p">,</span> <span class="n">fused_variance</span></div>
+
+    <span class="c1"># Main call method #</span>
+    <span class="c1"># -----------------#</span>
+
+    <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obs</span><span class="p">:</span> <span class="n">ESMObservation</span><span class="p">,</span> <span class="n">memory</span><span class="p">:</span> <span class="n">ESMMemory</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">num_timesteps</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">num_cams</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">image_dims</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Perform ESM update step.</span>
+
+<span class="sd">        :param obs: Observations</span>
+<span class="sd">        :type obs: ESMObservation</span>
+<span class="sd">        :param memory: Memory from the previous time-step, uses internal parameter if None.</span>
+<span class="sd">        :type memory: ESMMemory, optional.</span>
+<span class="sd">        :param batch_size: Size of batch, inferred from inputs if None.</span>
+<span class="sd">        :type batch_size: int, optional</span>
+<span class="sd">        :param num_timesteps: Number of timesteps, inferred from inputs if None.</span>
+<span class="sd">        :type num_timesteps: int, optional</span>
+<span class="sd">        :param num_cams: Number of cameras, inferred from inputs if None.</span>
+<span class="sd">        :type num_cams: int, optional</span>
+<span class="sd">        :param image_dims: Image dimensions of captured images, inferred from inputs if None.</span>
+<span class="sd">        :type image_dims: sequence of ints, optional</span>
+<span class="sd">        :return: New memory of type ESMMemory</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># get shapes</span>
+        <span class="n">img_meas</span> <span class="o">=</span> <span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">obs</span><span class="o">.</span><span class="n">img_meas</span><span class="o">.</span><span class="n">values</span><span class="p">())))</span><span class="o">.</span><span class="n">img_mean</span>
+        <span class="k">if</span> <span class="n">batch_size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">batch_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">img_meas</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">num_timesteps</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">num_timesteps</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">img_meas</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">num_cams</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">num_cams</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">obs</span><span class="o">.</span><span class="n">img_meas</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">image_dims</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">image_dims</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">img_meas</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">])</span>
+
+        <span class="c1"># get only previous memory</span>
+
+        <span class="c1"># extract from memory #</span>
+        <span class="c1"># --------------------#</span>
+
+        <span class="k">if</span> <span class="n">memory</span><span class="p">:</span>
+            <span class="n">prev_mem</span> <span class="o">=</span> <span class="n">memory</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stateful</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_memory</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">prev_mem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_memory</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">prev_mem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">empty_memory</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="c1"># holes prior #</span>
+        <span class="c1"># ------------#</span>
+
+        <span class="c1"># B x N x OH x OW x 1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sphere_depth_prior</span> <span class="o">=</span> \
+            <span class="n">ivy</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_timesteps</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sphere_img_dims</span> <span class="o">+</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">dev_str</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev_str</span><span class="p">)</span> <span class="o">*</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sphere_depth_prior_val</span>
+
+        <span class="c1"># B x N x OH x OW x F</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sphere_feat_prior</span> <span class="o">=</span> \
+            <span class="n">ivy</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_timesteps</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sphere_img_dims</span> <span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_feat_dim</span><span class="p">],</span> <span class="n">dev_str</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev_str</span><span class="p">)</span> <span class="o">*</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sphere_feat_prior_val</span>
+
+        <span class="c1"># B x N x OH x OW x (1+F)</span>
+        <span class="n">holes_prior</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_sphere_depth_prior</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_sphere_feat_prior</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># holes prior variances #</span>
+        <span class="c1"># ----------------------#</span>
+
+        <span class="c1"># B x N x OH x OW x 2</span>
+        <span class="n">sphere_ang_pix_prior_var</span> <span class="o">=</span> \
+            <span class="n">ivy</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_timesteps</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sphere_img_dims</span> <span class="o">+</span> <span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">dev_str</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev_str</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ang_pix_prior_var_val</span>
+
+        <span class="c1"># B x N x OH x OW x 1</span>
+        <span class="n">sphere_depth_prior_var</span> <span class="o">=</span> \
+            <span class="n">ivy</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_timesteps</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sphere_img_dims</span> <span class="o">+</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">dev_str</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev_str</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_depth_prior_var_val</span>
+
+        <span class="c1"># B x N x OH x OW x F</span>
+        <span class="n">sphere_feat_prior_var</span> <span class="o">=</span> \
+            <span class="n">ivy</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_timesteps</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sphere_img_dims</span> <span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_feat_dim</span><span class="p">],</span> <span class="n">dev_str</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev_str</span><span class="p">)</span> <span class="o">*</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">_feat_prior_var_val</span>
+
+        <span class="c1"># B x N x OH x OW x (3+F)</span>
+        <span class="n">holes_prior_var</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">sphere_ang_pix_prior_var</span><span class="p">]</span> <span class="o">+</span>
+                                          <span class="p">[</span><span class="n">sphere_depth_prior_var</span><span class="p">]</span> <span class="o">+</span>
+                                          <span class="p">[</span><span class="n">sphere_feat_prior_var</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># variance threshold #</span>
+        <span class="c1"># -------------------#</span>
+
+        <span class="c1"># B x N x (3+F) x 1</span>
+        <span class="n">var_threshold_min</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_min_ang_pix_var</span><span class="p">]</span><span class="o">*</span><span class="mi">2</span> <span class="o">+</span>
+                                  <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_min_depth_var</span><span class="p">]</span> <span class="o">+</span>
+                                  <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_min_feat_var</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_feat_dim</span><span class="p">),</span>
+                        <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_feat_dim</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="p">[</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_timesteps</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">var_threshold_max</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_ang_pix_var_threshold</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span>
+                                                           <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_depth_var_threshold</span><span class="p">]</span> <span class="o">+</span>
+                                                           <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_feat_var_threshold</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_feat_dim</span><span class="p">),</span>
+                                                 <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_feat_dim</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="p">[</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_timesteps</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_var_threshold</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">var_threshold_min</span><span class="p">,</span> <span class="n">var_threshold_max</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># measurements #</span>
+        <span class="c1"># -------------#</span>
+
+        <span class="c1"># B x N x OH x OW x 3</span>
+        <span class="n">uniform_sphere_pixel_coords</span> <span class="o">=</span> <span class="n">ivy_vision</span><span class="o">.</span><span class="n">create_uniform_pixel_coords_image</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sphere_img_dims</span><span class="p">,</span> <span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_timesteps</span><span class="p">),</span> <span class="n">dev_str</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev_str</span><span class="p">)</span>
+
+        <span class="c1"># B x N x OH x OW x (3+F),    B x N x OH x OW x (3+F)</span>
+        <span class="n">meas_means</span><span class="p">,</span> <span class="n">meas_vars</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_convert_images_to_omni_observations</span><span class="p">(</span>
+            <span class="n">obs</span><span class="o">.</span><span class="n">img_meas</span><span class="p">,</span> <span class="n">uniform_sphere_pixel_coords</span><span class="p">,</span> <span class="n">holes_prior</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">num_timesteps</span><span class="p">,</span> <span class="n">num_cams</span><span class="p">,</span> <span class="n">image_dims</span><span class="p">)</span>
+
+        <span class="c1"># filtering #</span>
+        <span class="c1"># ----------#</span>
+
+        <span class="c1"># list of B x OH x OW x (3+F),    list of B x OH x OW x (3+F)</span>
+        <span class="n">fused_measurements_list</span><span class="p">,</span> <span class="n">fused_variances_list</span> <span class="o">=</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">_kalman_filter_on_measurement_sequence</span><span class="p">(</span>
+                <span class="n">prev_mem</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="n">prev_mem</span><span class="o">.</span><span class="n">var</span><span class="p">,</span> <span class="n">holes_prior</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">holes_prior_var</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">meas_means</span><span class="p">,</span> <span class="n">meas_vars</span><span class="p">,</span>
+                <span class="n">uniform_sphere_pixel_coords</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">obs</span><span class="o">.</span><span class="n">control_mean</span><span class="p">,</span> <span class="n">obs</span><span class="o">.</span><span class="n">control_cov</span><span class="p">,</span> <span class="n">obs</span><span class="o">.</span><span class="n">agent_rel_mat</span><span class="p">,</span>
+                <span class="n">batch_size</span><span class="p">,</span> <span class="n">num_timesteps</span><span class="p">)</span>
+
+        <span class="c1"># new variance #</span>
+        <span class="c1"># -------------#</span>
+
+        <span class="c1"># B x N x OH x OW x (3+F)</span>
+        <span class="n">fused_variance</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">ivy</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">fused_variances_list</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># variance clipping</span>
+
+        <span class="c1"># B x N x OH x OW x 1</span>
+        <span class="n">fused_depth_variance</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">fused_variance</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_depth_var</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_depth_prior_var_val</span><span class="p">)</span>
+
+        <span class="c1"># B x N x OH x OW x 3</span>
+        <span class="n">fused_feat_variance</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">fused_variance</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">:],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_feat_var</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_feat_prior_var_val</span><span class="p">)</span>
+
+        <span class="c1"># B x N x OH x OW x (3+F)</span>
+        <span class="n">fused_variance</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">fused_depth_variance</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">fused_feat_variance</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># new mean #</span>
+        <span class="c1"># ---------#</span>
+
+        <span class="c1"># B x N x OH x OW x (3+F)</span>
+        <span class="n">fused_measurement</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">ivy</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">fused_measurements_list</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># value clipping</span>
+
+        <span class="c1"># B x N x OH x OW x 2</span>
+        <span class="n">fused_pixel_coords</span> <span class="o">=</span> <span class="n">fused_measurement</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
+
+        <span class="c1"># B x N x OH x OW x 1</span>
+        <span class="n">fused_depth</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">fused_measurement</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span><span class="mi">3</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_depth</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_depth</span><span class="p">)</span>
+
+        <span class="c1"># B x N x OH x OW x 3</span>
+        <span class="n">fused_feat</span> <span class="o">=</span> <span class="n">fused_measurement</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">3</span><span class="p">:]</span>
+
+        <span class="c1"># B x N x OH x OW x (3+F)</span>
+        <span class="n">fused_measurement</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">fused_pixel_coords</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">fused_depth</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">fused_feat</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># update memory #</span>
+        <span class="c1"># --------------#</span>
+
+        <span class="c1"># B x N x OH x OW x (3+F),    B x N x OH x OW x (3+F)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_memory</span> <span class="o">=</span> <span class="n">ESMMemory</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="n">fused_measurement</span><span class="p">,</span> <span class="n">var</span><span class="o">=</span><span class="n">fused_variance</span><span class="p">)</span>
+
+        <span class="c1"># return #</span>
+        <span class="c1"># -------#</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_memory</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Ivy Team
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

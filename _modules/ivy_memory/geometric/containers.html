@@ -1,0 +1,412 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ivy_memory.geometric.containers &mdash; Ivy Memory 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Ivy Memory
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Geometric</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../geometric/containers.html">Containers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../geometric/esm.html">Esm</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Learnt</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../learnt/ntm.html">Ntm</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../ivy"">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../mech"">Ivy Mech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../vision"">Ivy Vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../robot"">Ivy Robot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../memory"">Ivy Memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../gym"">Ivy Gym</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Ivy Memory</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>ivy_memory.geometric.containers</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for ivy_memory.geometric.containers</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Collection of containers for handling ESM input and output data</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># global</span>
+<span class="kn">import</span> <span class="nn">ivy</span>
+<span class="kn">import</span> <span class="nn">ivy_mech</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span>
+<span class="kn">from</span> <span class="nn">ivy.core.container</span> <span class="kn">import</span> <span class="n">Container</span>
+
+
+<span class="k">def</span> <span class="nf">_pad_to_batch_n_time_dims</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">expected_dims</span><span class="p">):</span>
+    <span class="c1"># ToDo: remove this once ESM supports arbitrary batch dimensions</span>
+    <span class="n">found_dims</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">found_dims</span> <span class="o">==</span> <span class="n">expected_dims</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">data</span>
+    <span class="k">elif</span> <span class="n">found_dims</span> <span class="o">&lt;</span> <span class="n">expected_dims</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">expected_dims</span> <span class="o">-</span> <span class="n">found_dims</span><span class="p">)</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;found more dims </span><span class="si">{}</span><span class="s1"> than expected </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">found_dims</span><span class="p">,</span> <span class="n">expected_dims</span><span class="p">))</span>
+
+
+<span class="c1"># noinspection PyMissingConstructor</span>
+<div class="viewcode-block" id="ESMCamMeasurement"><a class="viewcode-back" href="../../../geometric/containers/ESMCamMeasurement.html#ivy_memory.geometric.containers.ESMCamMeasurement">[docs]</a><span class="k">class</span> <span class="nc">ESMCamMeasurement</span><span class="p">(</span><span class="n">Container</span><span class="p">):</span>
+
+<div class="viewcode-block" id="ESMCamMeasurement.__init__"><a class="viewcode-back" href="../../../geometric/containers/ESMCamMeasurement.html#ivy_memory.geometric.containers.ESMCamMeasurement.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">img_mean</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+                 <span class="n">cam_rel_mat</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">img_var</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">validity_mask</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">pose_mean</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">pose_cov</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">dev_str</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create esm image measurement container</span>
+
+<span class="sd">        :param img_mean: Camera-relative co-ordinates and image features</span>
+<span class="sd">                            *[batch_size, timesteps, height, width, 3 + feat]*</span>
+<span class="sd">        :type: img_mean: array</span>
+<span class="sd">        :param cam_rel_mat: The pose of the camera relative to the current agent pose. Default is identity matrix</span>
+<span class="sd">                            *[batch_size, timesteps, 3, 4]*</span>
+<span class="sd">        :type cam_rel_mat: array, optional</span>
+<span class="sd">        :param img_var: Image depth and feature variance values, assumed all zero if None.</span>
+<span class="sd">                        *[batch_size, timesteps, height, width, 1 + feat]*</span>
+<span class="sd">        :type: img_var: array, optional</span>
+<span class="sd">        :param validity_mask: Validity mask, for which pixels should be considered. Assumed all valid if None</span>
+<span class="sd">                                *[batch_size, timesteps, height, width, 1]*</span>
+<span class="sd">        :type validity_mask: array, optional</span>
+<span class="sd">        :param pose_mean: The pose of the camera relative to the current agent pose, in rotation vector pose form.</span>
+<span class="sd">                            Inferred from cam_rel_mat if None. *[batch_size, timesteps, 6]*</span>
+<span class="sd">        :type pose_mean: array, optional</span>
+<span class="sd">        :param pose_cov: The convariance of the camera relative pose, in rotation vector form. Assumed all zero if None.</span>
+<span class="sd">                            *[batch_size, timesteps, 6, 6]*</span>
+<span class="sd">        :type pose_cov: array, optional</span>
+<span class="sd">        :param dev_str: Device string to use, default is to use img_mean.</span>
+<span class="sd">        :type dev_str: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">dev_str</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dev_str</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dev_str</span><span class="p">(</span><span class="n">img_mean</span><span class="p">)</span>
+        <span class="n">img_mean</span> <span class="o">=</span> <span class="n">_pad_to_batch_n_time_dims</span><span class="p">(</span><span class="n">img_mean</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;img_mean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">img_mean</span>
+        <span class="k">if</span> <span class="n">cam_rel_mat</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">cam_rel_mat</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">batch_shape</span><span class="o">=</span><span class="n">img_mean</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">],</span> <span class="n">dev_str</span><span class="o">=</span><span class="n">dev_str</span><span class="p">)[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cam_rel_mat</span> <span class="o">=</span> <span class="n">_pad_to_batch_n_time_dims</span><span class="p">(</span><span class="n">cam_rel_mat</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;cam_rel_mat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cam_rel_mat</span>
+        <span class="k">if</span> <span class="n">img_var</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">img_var</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">img_mean</span><span class="p">,</span> <span class="n">dev_str</span><span class="o">=</span><span class="n">dev_str</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">img_var</span> <span class="o">=</span> <span class="n">_pad_to_batch_n_time_dims</span><span class="p">(</span><span class="n">img_var</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;img_var&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">img_var</span>
+        <span class="k">if</span> <span class="n">validity_mask</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">validity_mask</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">img_mean</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">],</span> <span class="n">dev_str</span><span class="o">=</span><span class="n">dev_str</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">validity_mask</span> <span class="o">=</span> <span class="n">_pad_to_batch_n_time_dims</span><span class="p">(</span><span class="n">validity_mask</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;validity_mask&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">validity_mask</span>
+        <span class="k">if</span> <span class="n">pose_mean</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">pose_mean</span> <span class="o">=</span> <span class="n">ivy_mech</span><span class="o">.</span><span class="n">mat_pose_to_rot_vec_pose</span><span class="p">(</span><span class="n">cam_rel_mat</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pose_mean</span> <span class="o">=</span> <span class="n">_pad_to_batch_n_time_dims</span><span class="p">(</span><span class="n">pose_mean</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;pose_mean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pose_mean</span>
+        <span class="k">if</span> <span class="n">pose_cov</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">pose_cov</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">pose_mean</span><span class="p">,</span> <span class="n">dev_str</span><span class="o">=</span><span class="n">dev_str</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pose_cov</span> <span class="o">=</span> <span class="n">_pad_to_batch_n_time_dims</span><span class="p">(</span><span class="n">pose_cov</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;pose_cov&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pose_cov</span></div>
+
+    <span class="c1"># properties</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">img_mean</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;img_mean&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">img_var</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;img_var&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">validity_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;validity_mask&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">pose_mean</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;pose_mean&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">pose_cov</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;pose_cov&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">cam_rel_mat</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;cam_rel_mat&#39;</span><span class="p">]</span></div>
+
+
+<span class="c1"># noinspection PyMissingConstructor</span>
+<div class="viewcode-block" id="ESMObservation"><a class="viewcode-back" href="../../../geometric/containers/ESMObservation.html#ivy_memory.geometric.containers.ESMObservation">[docs]</a><span class="k">class</span> <span class="nc">ESMObservation</span><span class="p">(</span><span class="n">Container</span><span class="p">):</span>
+
+<div class="viewcode-block" id="ESMObservation.__init__"><a class="viewcode-back" href="../../../geometric/containers/ESMObservation.html#ivy_memory.geometric.containers.ESMObservation.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">img_meas</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ESMCamMeasurement</span><span class="p">],</span>
+                 <span class="n">agent_rel_mat</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+                 <span class="n">control_mean</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">control_cov</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">dev_str</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create esm observation container</span>
+
+<span class="sd">        :param img_meas: dict of ESMImageMeasurement objects, with keys for camera names.</span>
+<span class="sd">        :type: img_meas: Ivy container</span>
+<span class="sd">        :param agent_rel_mat: The pose of the agent relative to the previous pose, in matrix form</span>
+<span class="sd">                                *[batch_size, timesteps, 3, 4]*.</span>
+<span class="sd">        :type agent_rel_mat: array</span>
+<span class="sd">        :param control_mean: The pose of the agent relative to the previous pose, in rotation vector pose form.</span>
+<span class="sd">                                Inferred from agent_rel_mat if None. *[batch_size, timesteps, 6]*</span>
+<span class="sd">        :type control_mean: array, optional</span>
+<span class="sd">        :param control_cov: The convariance of the agent relative pose, in rotation vector form.</span>
+<span class="sd">                             Assumed all zero if None. *[batch_size, timesteps, 6, 6]*.</span>
+<span class="sd">        :type control_cov: array, optional</span>
+<span class="sd">        :param dev_str: Device string to use, default is to use img_mean.</span>
+<span class="sd">        :type dev_str: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">dev_str</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dev_str</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dev_str</span><span class="p">(</span><span class="n">agent_rel_mat</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;img_meas&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Container</span><span class="p">(</span><span class="n">img_meas</span><span class="p">)</span>
+        <span class="n">agent_rel_mat</span> <span class="o">=</span> <span class="n">_pad_to_batch_n_time_dims</span><span class="p">(</span><span class="n">agent_rel_mat</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;agent_rel_mat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">agent_rel_mat</span>
+        <span class="k">if</span> <span class="n">control_mean</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">control_mean</span> <span class="o">=</span> <span class="n">ivy_mech</span><span class="o">.</span><span class="n">mat_pose_to_rot_vec_pose</span><span class="p">(</span><span class="n">agent_rel_mat</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">control_mean</span> <span class="o">=</span> <span class="n">_pad_to_batch_n_time_dims</span><span class="p">(</span><span class="n">control_mean</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;control_mean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">control_mean</span>
+        <span class="k">if</span> <span class="n">control_cov</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">control_cov</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">control_mean</span><span class="p">,</span> <span class="n">dev_str</span><span class="o">=</span><span class="n">dev_str</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">control_cov</span> <span class="o">=</span> <span class="n">_pad_to_batch_n_time_dims</span><span class="p">(</span><span class="n">control_cov</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;control_cov&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">control_cov</span></div>
+
+    <span class="c1"># properties</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">img_meas</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;img_meas&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">control_mean</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;control_mean&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">control_cov</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;control_cov&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">agent_rel_mat</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;agent_rel_mat&#39;</span><span class="p">]</span></div>
+
+
+<span class="c1"># noinspection PyMissingConstructor</span>
+<div class="viewcode-block" id="ESMMemory"><a class="viewcode-back" href="../../../geometric/containers/ESMMemory.html#ivy_memory.geometric.containers.ESMMemory">[docs]</a><span class="k">class</span> <span class="nc">ESMMemory</span><span class="p">(</span><span class="n">Container</span><span class="p">):</span>
+
+<div class="viewcode-block" id="ESMMemory.__init__"><a class="viewcode-back" href="../../../geometric/containers/ESMMemory.html#ivy_memory.geometric.containers.ESMMemory.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">mean</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+                 <span class="n">var</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">dev_str</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create esm memory container</span>
+
+<span class="sd">        :param mean: The ESM memory feature values *[batch_size, timesteps, omni_height, omni_width, 2 + feat]*</span>
+<span class="sd">        :type: mean: array</span>
+<span class="sd">        :param var: The ESM memory feature variance values. All assumed zero if None.</span>
+<span class="sd">                        *[batch_size, timesteps, omni_height, omni_width, feat]*</span>
+<span class="sd">        :type: var: array, optional</span>
+<span class="sd">        :param dev_str: Device string to use, default is to use img_mean.</span>
+<span class="sd">        :type dev_str: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mean</span> <span class="o">=</span> <span class="n">_pad_to_batch_n_time_dims</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mean</span>
+        <span class="k">if</span> <span class="n">var</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">var</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">dev_str</span><span class="o">=</span><span class="n">dev_str</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">var</span> <span class="o">=</span> <span class="n">_pad_to_batch_n_time_dims</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;var&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">var</span></div>
+
+    <span class="c1"># properties</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">mean</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">var</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;var&#39;</span><span class="p">]</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Ivy Team
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -367,6 +367,7 @@ Documentation Tree
    :maxdepth: -1
    :caption: Geometric
 
+   geometric/containers.rst
    geometric/esm.rst
 
 
