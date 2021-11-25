@@ -218,58 +218,34 @@
         <span class="k">if</span> <span class="n">dev_str</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">dev_str</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dev_str</span><span class="p">(</span><span class="n">img_mean</span><span class="p">)</span>
         <span class="n">img_mean</span> <span class="o">=</span> <span class="n">_pad_to_batch_n_time_dims</span><span class="p">(</span><span class="n">img_mean</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
-        <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;img_mean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">img_mean</span>
+        <span class="n">cont</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">cont</span><span class="p">[</span><span class="s1">&#39;img_mean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">img_mean</span>
         <span class="k">if</span> <span class="n">cam_rel_mat</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">cam_rel_mat</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">batch_shape</span><span class="o">=</span><span class="n">img_mean</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">],</span> <span class="n">dev_str</span><span class="o">=</span><span class="n">dev_str</span><span class="p">)[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">cam_rel_mat</span> <span class="o">=</span> <span class="n">_pad_to_batch_n_time_dims</span><span class="p">(</span><span class="n">cam_rel_mat</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
-        <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;cam_rel_mat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cam_rel_mat</span>
+        <span class="n">cont</span><span class="p">[</span><span class="s1">&#39;cam_rel_mat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cam_rel_mat</span>
         <span class="k">if</span> <span class="n">img_var</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">img_var</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">img_mean</span><span class="p">,</span> <span class="n">dev_str</span><span class="o">=</span><span class="n">dev_str</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">img_var</span> <span class="o">=</span> <span class="n">_pad_to_batch_n_time_dims</span><span class="p">(</span><span class="n">img_var</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
-        <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;img_var&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">img_var</span>
+        <span class="n">cont</span><span class="p">[</span><span class="s1">&#39;img_var&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">img_var</span>
         <span class="k">if</span> <span class="n">validity_mask</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">validity_mask</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">img_mean</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">],</span> <span class="n">dev_str</span><span class="o">=</span><span class="n">dev_str</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">validity_mask</span> <span class="o">=</span> <span class="n">_pad_to_batch_n_time_dims</span><span class="p">(</span><span class="n">validity_mask</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
-        <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;validity_mask&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">validity_mask</span>
+        <span class="n">cont</span><span class="p">[</span><span class="s1">&#39;validity_mask&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">validity_mask</span>
         <span class="k">if</span> <span class="n">pose_mean</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">pose_mean</span> <span class="o">=</span> <span class="n">ivy_mech</span><span class="o">.</span><span class="n">mat_pose_to_rot_vec_pose</span><span class="p">(</span><span class="n">cam_rel_mat</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">pose_mean</span> <span class="o">=</span> <span class="n">_pad_to_batch_n_time_dims</span><span class="p">(</span><span class="n">pose_mean</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-        <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;pose_mean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pose_mean</span>
+        <span class="n">cont</span><span class="p">[</span><span class="s1">&#39;pose_mean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pose_mean</span>
         <span class="k">if</span> <span class="n">pose_cov</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">pose_cov</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">pose_mean</span><span class="p">,</span> <span class="n">dev_str</span><span class="o">=</span><span class="n">dev_str</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">pose_cov</span> <span class="o">=</span> <span class="n">_pad_to_batch_n_time_dims</span><span class="p">(</span><span class="n">pose_cov</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
-        <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;pose_cov&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pose_cov</span></div>
-
-    <span class="c1"># properties</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">img_mean</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;img_mean&#39;</span><span class="p">]</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">img_var</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;img_var&#39;</span><span class="p">]</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">validity_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;validity_mask&#39;</span><span class="p">]</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">pose_mean</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;pose_mean&#39;</span><span class="p">]</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">pose_cov</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;pose_cov&#39;</span><span class="p">]</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">cam_rel_mat</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;cam_rel_mat&#39;</span><span class="p">]</span></div>
+        <span class="n">cont</span><span class="p">[</span><span class="s1">&#39;pose_cov&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pose_cov</span>
+        <span class="n">Container</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cont</span><span class="p">)</span></div></div>
 
 
 <span class="c1"># noinspection PyMissingConstructor</span>
@@ -298,39 +274,23 @@
 <span class="sd">        :param dev_str: Device string to use, default is to use img_mean.</span>
 <span class="sd">        :type dev_str: str</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cont</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">dev_str</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">dev_str</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dev_str</span><span class="p">(</span><span class="n">agent_rel_mat</span><span class="p">)</span>
-        <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;img_meas&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Container</span><span class="p">(</span><span class="n">img_meas</span><span class="p">)</span>
+        <span class="n">cont</span><span class="p">[</span><span class="s1">&#39;img_meas&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Container</span><span class="p">(</span><span class="n">img_meas</span><span class="p">)</span>
         <span class="n">agent_rel_mat</span> <span class="o">=</span> <span class="n">_pad_to_batch_n_time_dims</span><span class="p">(</span><span class="n">agent_rel_mat</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
-        <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;agent_rel_mat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">agent_rel_mat</span>
+        <span class="n">cont</span><span class="p">[</span><span class="s1">&#39;agent_rel_mat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">agent_rel_mat</span>
         <span class="k">if</span> <span class="n">control_mean</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">control_mean</span> <span class="o">=</span> <span class="n">ivy_mech</span><span class="o">.</span><span class="n">mat_pose_to_rot_vec_pose</span><span class="p">(</span><span class="n">agent_rel_mat</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">control_mean</span> <span class="o">=</span> <span class="n">_pad_to_batch_n_time_dims</span><span class="p">(</span><span class="n">control_mean</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-        <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;control_mean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">control_mean</span>
+        <span class="n">cont</span><span class="p">[</span><span class="s1">&#39;control_mean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">control_mean</span>
         <span class="k">if</span> <span class="n">control_cov</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">control_cov</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">control_mean</span><span class="p">,</span> <span class="n">dev_str</span><span class="o">=</span><span class="n">dev_str</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">control_cov</span> <span class="o">=</span> <span class="n">_pad_to_batch_n_time_dims</span><span class="p">(</span><span class="n">control_cov</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
-        <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;control_cov&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">control_cov</span></div>
-
-    <span class="c1"># properties</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">img_meas</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;img_meas&#39;</span><span class="p">]</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">control_mean</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;control_mean&#39;</span><span class="p">]</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">control_cov</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;control_cov&#39;</span><span class="p">]</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">agent_rel_mat</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;agent_rel_mat&#39;</span><span class="p">]</span></div>
+        <span class="n">cont</span><span class="p">[</span><span class="s1">&#39;control_cov&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">control_cov</span>
+        <span class="n">Container</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cont</span><span class="p">)</span></div></div>
 
 
 <span class="c1"># noinspection PyMissingConstructor</span>
@@ -351,23 +311,15 @@
 <span class="sd">        :param dev_str: Device string to use, default is to use img_mean.</span>
 <span class="sd">        :type dev_str: str</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cont</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
         <span class="n">mean</span> <span class="o">=</span> <span class="n">_pad_to_batch_n_time_dims</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
-        <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mean</span>
+        <span class="n">cont</span><span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mean</span>
         <span class="k">if</span> <span class="n">var</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">var</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">dev_str</span><span class="o">=</span><span class="n">dev_str</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">var</span> <span class="o">=</span> <span class="n">_pad_to_batch_n_time_dims</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
-        <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;var&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">var</span></div>
-
-    <span class="c1"># properties</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">mean</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">]</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">var</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;var&#39;</span><span class="p">]</span></div>
+        <span class="n">cont</span><span class="p">[</span><span class="s1">&#39;var&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">var</span>
+        <span class="n">Container</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cont</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>
